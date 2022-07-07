@@ -1,0 +1,12 @@
+
+/config/application.yml
+/file
+*.exe
+
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
