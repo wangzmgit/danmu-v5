@@ -96,7 +96,7 @@ func ModifyResourceTitle(ctx *gin.Context) {
 	}
 
 	uid := ctx.GetUint("uid")
-	res := service.ModifyResourceTitleService(request.ID, uid,request.Title)
+	res := service.ModifyResourceTitleService(request.ID, uid, request.Title)
 	response.HandleResponse(ctx, res)
 }
 
@@ -162,6 +162,24 @@ func GetUploadVideoList(ctx *gin.Context) {
 		return
 	}
 	res := service.GetUploadVideoListService(page, pageSize, uid)
+	response.HandleResponse(ctx, res)
+}
+
+/*********************************************************
+** 函数功能: 用户获取资源列表
+** 日    期: 2022年6月6日17:28:17
+**********************************************************/
+func GetUploadResourceList(ctx *gin.Context) {
+	vid := util.StringToInt(ctx.Query("vid"))
+
+	if vid == 0 {
+		response.CheckFail(ctx, nil, response.VideoNotExist)
+		return
+	}
+
+	uid := ctx.GetUint("uid")
+
+	res := service.GetUploadResourceListService(vid, uid)
 	response.HandleResponse(ctx, res)
 }
 

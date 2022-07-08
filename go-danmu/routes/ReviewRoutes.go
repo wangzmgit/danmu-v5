@@ -14,9 +14,8 @@ func GetReviewRoutes(route *gin.RouterGroup) {
 		userAuth := review.Group("")
 		userAuth.Use(middleware.AuthMiddleware(common.User))
 		{
-			userAuth.GET("/status", controller.GetVideoStatus)                      //获取视频状态
-			userAuth.GET("/resource/upload/list", controller.GetUploadResourceList) // 获取用户上传资源
-			userAuth.POST("/submit", controller.SubmitReview)                       //提交审核
+			userAuth.GET("/status", controller.GetVideoStatus) //获取视频状态
+			userAuth.POST("/submit", controller.SubmitReview)  //提交审核
 		}
 
 		//管理员接口

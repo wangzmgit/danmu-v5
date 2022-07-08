@@ -21,6 +21,7 @@ func GetVideoRoutes(route *gin.RouterGroup) {
 		userAuth := video.Group("")
 		userAuth.Use(middleware.AuthMiddleware(common.User))
 		{
+			userAuth.GET("/resource/list", controller.GetUploadResourceList)        // 用户获取上传资源
 			userAuth.GET("/upload/get", controller.GetUploadVideoList)              //获取个人上传的视频
 			userAuth.POST("/modify/info", controller.ModifyVideoInfo)               //更新视频信息
 			userAuth.POST("/delete", controller.DeleteVideo)                        //删除视频

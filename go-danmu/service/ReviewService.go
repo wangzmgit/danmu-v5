@@ -47,30 +47,6 @@ func GetVideoStatusService(vid int, uid uint) response.ResponseStruct {
 }
 
 /*********************************************************
-** 函数功能: 用户获取上传资源列表
-** 日    期: 2022年6月6日17:28:54
-**********************************************************/
-func GetUploadResourceListService(vid int, uid uint) response.ResponseStruct {
-	res := response.ResponseStruct{
-		HttpStatus: http.StatusOK,
-		Code:       response.SuccessCode,
-		Data:       nil,
-		Msg:        response.OK,
-	}
-
-	DB := common.GetDB()
-	var resources []model.Resource
-	if err := DB.Where("vid = ?", vid).Find(&resources).Error; err != nil {
-		res.HttpStatus = http.StatusBadRequest
-		res.Code = response.FailCode
-		res.Msg = response.UpdateStatusFail
-		return res
-	}
-	res.Data = gin.H{"resources": vo.ToReviewResourceListVo(resources)}
-	return res
-}
-
-/*********************************************************
 ** 函数功能: 获取审核列表
 ** 日    期: 2021年11月12日14:52:09
 **********************************************************/

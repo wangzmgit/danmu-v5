@@ -110,10 +110,10 @@ func SetEmailConfig(ctx *gin.Context) {
 }
 
 /*********************************************************
-** 函数功能: 获取oss配置信息
+** 函数功能: 获取存储配置信息
 ** 日    期: 2022年2月24日11:51:31
 **********************************************************/
-func GetOssConfig(ctx *gin.Context) {
+func GetStorageConfig(ctx *gin.Context) {
 	response.Success(ctx, gin.H{
 		"storage":        viper.GetBool("file.storage"),
 		"https":          viper.GetBool("file.https"),
@@ -128,10 +128,10 @@ func GetOssConfig(ctx *gin.Context) {
 }
 
 /*********************************************************
-** 函数功能: 配置oss
+** 函数功能: 修改存储配置
 ** 日    期: 2022年7月6日13:22:35
 **********************************************************/
-func SetOssConfig(ctx *gin.Context) {
+func SetStorageConfig(ctx *gin.Context) {
 	var storage dto.StorageConfigDto
 	err := ctx.Bind(&storage)
 	if err != nil {

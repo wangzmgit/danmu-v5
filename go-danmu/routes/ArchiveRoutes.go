@@ -31,7 +31,7 @@ func GetArchiveRoutes(route *gin.RouterGroup) {
 		uidAuth.Use(middleware.UidMiddleware())
 		{
 			uidAuth.GET("/collection/info", controller.GetCollectionByID) //获取收藏夹信息
-			uidAuth.GET("/collect/get", controller.GetCollectVideo)       //获取收藏的视频
+			uidAuth.GET("/collect/get", controller.GetCollectVideo)       //获取收藏夹内的视频
 		}
 	}
 }

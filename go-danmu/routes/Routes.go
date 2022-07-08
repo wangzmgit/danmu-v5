@@ -31,6 +31,6 @@ func CollectRoute(r *gin.Engine) *gin.Engine {
 	r.StaticFS("/api/cover", http.Dir("./file/cover"))
 	r.StaticFS("/api/video", http.Dir("./file/video"))
 	r.StaticFS("/api/carousel", http.Dir("./file/carousel"))
-	r.StaticFS("/api/output", http.Dir("./file/output"))
+
 	return r
 }
