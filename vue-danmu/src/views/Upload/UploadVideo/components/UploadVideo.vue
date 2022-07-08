@@ -30,8 +30,8 @@
 
 <script>
 import { onBeforeMount, reactive, nextTick, ref } from "vue";
-import { getReviewResourceAPI, submitReviewAPI } from '@/api/review';
-import { deleteResourceAPI, modifyTitleAPI } from "@/api/video";
+import { submitReviewAPI } from '@/api/review';
+import { deleteResourceAPI, modifyTitleAPI, getResourceListAPI } from "@/api/video";
 import VideoUpload from "./VideoUpload.vue";
 import { NScrollbar, NInput, NInputGroup, NButton, NIcon, NTag, useNotification } from "naive-ui";
 import { Videocam } from "@vicons/ionicons5";
@@ -77,8 +77,8 @@ export default {
             }
         }
 
-        const getReviewResource = () => {
-            getReviewResourceAPI(vid).then((res) => {
+        const getResourceList = () => {
+            getResourceListAPI(vid).then((res) => {
                 if (res.data.code === 2000) {
                     uploadVideoList.value = res.data.data.resources;
                 }
@@ -157,7 +157,7 @@ export default {
         }
 
         onBeforeMount(() => {
-            getReviewResource();
+            getResourceList();
         })
 
         return {
@@ -171,7 +171,6 @@ export default {
             toTagText,
             submitReview,
             deleteResource,
-            getReviewResource
         }
     },
     components: {

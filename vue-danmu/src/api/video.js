@@ -49,3 +49,8 @@ export const deleteVideoAPI = (id) => {
 export const deleteResourceAPI = (id) => {
   return request.post('v1/video/resource/delete', { id });
 }
+
+//获取视频状态
+export const getResourceListAPI = (vid) => {
+  return request.get(`v1/video/resource/list?vid=${vid}`);
+}
