@@ -32,10 +32,10 @@ export const getStorageAPI = () => {
 
 //修改邮箱
 export const setStorageAPI = ({
-    https, maxImgSize, maxVideoSize, storage, domain, bucket, endpoint, accesskeyId, accesskeySecret
+    https, maxImgSize, maxVideoSize, oss, domain, bucket, endpoint, accesskeyId, accesskeySecret
 }) => {
     return request.post('v1/config/storage/set', {
-        https, maxImgSize, maxVideoSize, storage, domain, bucket, endpoint, accesskeyId, accesskeySecret
+        https, maxImgSize, maxVideoSize, oss, domain, bucket, endpoint, accesskeyId, accesskeySecret
     });
 }
 

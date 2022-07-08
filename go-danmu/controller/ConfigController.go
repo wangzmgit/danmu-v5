@@ -115,7 +115,7 @@ func SetEmailConfig(ctx *gin.Context) {
 **********************************************************/
 func GetStorageConfig(ctx *gin.Context) {
 	response.Success(ctx, gin.H{
-		"storage":        viper.GetBool("file.storage"),
+		"oss":            viper.GetBool("file.oss"),
 		"https":          viper.GetBool("file.https"),
 		"domain":         viper.GetString("file.domain"),
 		"max_img_size":   viper.GetInt("file.max_img_size"),
@@ -140,7 +140,7 @@ func SetStorageConfig(ctx *gin.Context) {
 	}
 
 	viper.Set("file.https", storage.Https)
-	viper.Set("file.storage", storage.Storage)
+	viper.Set("file.oss", storage.Storage)
 	viper.Set("file.domain", storage.Domain)
 	viper.Set("file.max_img_size", storage.MaxImgSize)
 	viper.Set("file.max_video_size", storage.MaxVideoSize)

@@ -10,7 +10,7 @@
             </span>
             <span>|</span>
             <span>
-                Powered by <a href="https://gitee.com/wzmgit/danmu-v5" target="_blank">wzmgit/danmu-v5</a>
+                Powered by <a href="https://github.com/wangzmgit/danmu-v5" target="_blank">wzmgit/danmu-v5</a>
             </span>
         </div>
         <div class="copyright link-list">

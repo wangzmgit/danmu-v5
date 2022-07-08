@@ -14,9 +14,9 @@
                 <n-input placeholder="文件域名" v-model:value="storageForm.domain" />
             </n-form-item>
             <n-form-item label="使用OSS存储">
-                <n-switch v-model:value="storageForm.storage"></n-switch>
+                <n-switch v-model:value="storageForm.oss"></n-switch>
             </n-form-item>
-            <div v-if="storageForm.storage">
+            <div v-if="storageForm.oss">
                 <n-form-item label="OSS存储空间(Bucket)">
                     <n-input placeholder="存储空间(Bucket)" v-model:value="storageForm.bucket" />
                 </n-form-item>
@@ -53,7 +53,7 @@ export default {
                 if (res.data.code === 2000) {
                     const resData = res.data.data;
                     storageForm.https = resData.https;
-                    storageForm.storage = resData.storage;
+                    storageForm.oss = resData.oss;
                     storageForm.domain = resData.domain;
                     storageForm.maxImgSize = resData.max_img_size;
                     storageForm.maxVideoSize = resData.max_video_size;
@@ -66,7 +66,7 @@ export default {
 
         const storageForm = reactive({
             https: false,
-            storage: false,
+            oss: false,
             domain: '',
             maxImgSize: 5,
             maxVideoSize: 500,

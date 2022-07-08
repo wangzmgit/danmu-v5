@@ -1,5 +1,5 @@
 const title = "Lemon";
-const url = "http://localhost:9000/";
+const url = "/";
 const mobile = "/mobile/";
 const icp = "icp备案信息";
 const security = "公网安备信息"
