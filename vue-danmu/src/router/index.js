@@ -2,7 +2,7 @@ import storage from "@/utils/stored-data";
 import userRoutes from './user.js';//用户空间
 import spaceRoutes from './space.js';//个人空间、
 import uploadRoutes from "./upload.js";
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 const home = () => import("../views/Home/Index");
 const video = () => import("../views/Video/Index");
@@ -54,7 +54,7 @@ const baseRoutes = [
 const routes = baseRoutes.concat(userRoutes, spaceRoutes, uploadRoutes);
 
 const router = createRouter({
-    history: createWebHistory(process.env.BASE_URL),
+    history: createWebHashHistory(),
     routes: routes
 })
 

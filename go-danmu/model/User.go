@@ -10,7 +10,7 @@ type User struct {
 	gorm.Model
 	Avatar   string    `gorm:"size:255;"`
 	Name     string    `gorm:"type:varchar(20);not null"`
-	Email    string    `gorm:"type:varchar(20);not null;index"`
+	Email    string    `gorm:"type:varchar(30);not null;index"`
 	Password string    `gorm:"size:255;not null"`
 	Gender   int       `gorm:"default:0"`
 	Birthday time.Time `gorm:"default:'1970-01-01'"`
