@@ -13,15 +13,18 @@ danmu_v5
 
 ## 项目文档
 
-部署文档 正在编写中
-
-接口文档 正在编写中
-
 开发交流群 909847398
 
-旧版本项目 https://gitee.com/wzmgit/go-danmu
+部署文档 http://www.kuukaa.fun/quick_use/config.html
+
+接口文档 http://www.kuukaa.fun/api/explain.html
+
+旧版本后端 https://gitee.com/wzmgit/go-danmu
+
+旧版本前端 https://gitee.com/wzmgit/vue-danmu 
 
 旧版本演示视频 https://www.bilibili.com/video/BV1TA411F7xz
+
 
 
 ## 使用教程
@@ -36,5 +39,14 @@ docker run -itd --name danmuV5 -v /usr/danmaku:/danmu/go-danmu/file -p 9000:9000
 
 ## 项目截图
 
-暂无
+![首页](http://www.kuukaa.fun/img/home.png)
 
+![个人中心](http://www.kuukaa.fun/img/space.png)
+
+![投稿](http://www.kuukaa.fun/img/upload.png)
+
+![视频](http://www.kuukaa.fun/img/video.png)
+
+![收藏夹](http://www.kuukaa.fun/img/collection.png)
+
+![后台管理](http://www.kuukaa.fun/img/manage_about.png)
