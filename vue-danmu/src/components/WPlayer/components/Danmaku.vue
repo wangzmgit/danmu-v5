@@ -171,7 +171,7 @@ export default {
       } else if (type == 2) {
         item.style.width = "100%";
         item.style.textAlign = "center";
-        item.style.bottom = String(getFixedTunnel(1) * 26) + "px";
+        item.style.bottom = String(getFixedTunnel(2) * 26) + "px";
         danmaku.value.push(item);
         danmakuRef.value.appendChild(item);
         item.addEventListener("animationend", () => {

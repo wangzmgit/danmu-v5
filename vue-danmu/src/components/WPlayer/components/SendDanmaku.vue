@@ -156,11 +156,11 @@ export default {
   height: 30px;
   margin: 0 16px;
   cursor: pointer;
-}
 
-.danmaku-setting-icon {
-  width: 30px;
-  height: 30px;
+  .danmaku-setting-icon {
+    width: 30px;
+    height: 30px;
+  }
 }
 
 .danmaku-input {

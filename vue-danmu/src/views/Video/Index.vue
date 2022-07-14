@@ -131,7 +131,7 @@ export default {
         }
 
         const changePart = (terget) => {
-            if (!resources.value[terget.value - 1]) {
+            if (!resources.value[terget - 1]) {
                 part.value = terget;
             }
             options.data = resources.value[part.value - 1];

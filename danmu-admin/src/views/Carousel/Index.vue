@@ -34,8 +34,8 @@
         <n-drawer-content title="添加轮播图">
             <carousel-upload :cover="carouselForm.img" @finish="finishUpload"></carousel-upload>
             <n-form class="info-form">
-                <n-form-item label="名称">
-                    <n-input v-model:value="carouselForm.url" placeholder="请输入名称" maxlength="100" show-count />
+                <n-form-item label="URL">
+                    <n-input v-model:value="carouselForm.url" placeholder="请输入URL" maxlength="100" show-count />
                 </n-form-item>
                 <n-button type="primary" @click="submitCarousel">保存</n-button>
             </n-form>

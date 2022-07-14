@@ -242,7 +242,7 @@ export default {
             const res = JSON.parse(Base64.decode(e.data));
             if (msgForm.fid === res.fid) {
                 msgDetails.value.push({
-                    form_id: res.fid,
+                    from_id: res.fid,
                     content: res.content,
                 });
                 nextTick(() => {

@@ -43,7 +43,7 @@
 <script>
 import { ref, computed, onMounted } from "vue";
 import storage from "@/utils/stored-data.js";
-import { NIcon, NAvatar } from 'naive-ui';
+import { NIcon, NAvatar, useNotification } from 'naive-ui';
 import { useRouter } from "vue-router";
 import { getFollowDataAPI } from '@/api/follow';
 import { Person, Female, Male } from '@vicons/ionicons5';
@@ -55,6 +55,7 @@ export default {
         const followers = ref(0);
         const following = ref(0);
         const router = useRouter();
+        const notification = useNotification();
 
         const userInfo = computed(() => {
             return storage.get("userInfo");

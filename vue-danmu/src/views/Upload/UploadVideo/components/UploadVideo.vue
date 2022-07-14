@@ -1,5 +1,5 @@
 <template>
-    <video-upload :vid="vid"></video-upload>
+    <video-upload :vid="vid" @finish="finishUpload"></video-upload>
     <div class="video-box">
         <n-scrollbar style="max-height: 300px;">
             <div class="video-item" v-for="(item, index) in uploadVideoList">
@@ -75,6 +75,10 @@ export default {
                 default:
                     return "未知";
             }
+        }
+
+        const finishUpload = () => {
+            getResourceList();
         }
 
         const getResourceList = () => {
@@ -165,6 +169,7 @@ export default {
             titleInput,
             modifyForm,
             uploadVideoList,
+            finishUpload,
             modifyTitle,
             titleClick,
             toTagType,
@@ -233,7 +238,7 @@ export default {
 
 .upload-next-btn {
     float: right;
-    margin: 10px 20px 0;
+    margin: 10px 20px 20px;
 
     button {
         width: 160px;

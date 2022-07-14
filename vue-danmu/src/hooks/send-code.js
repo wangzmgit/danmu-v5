@@ -20,7 +20,7 @@ export default function useSendCode() {
                         duration: 10000,
                     })
                 } else {
-                    notification.success({
+                    notification.error({
                         content: '发送成功',
                         duration: 5000,
                     })
@@ -39,7 +39,7 @@ export default function useSendCode() {
                 }, 1000);
             }
         }).catch((err) => {
-            disabledSend = false;
+            disabledSend.value = false;
             sendBtnText.value = "发送验证码";
             notification.error({
                 title: '发送失败',

@@ -212,7 +212,7 @@ export default {
             videoInfo.resText = res + 'P';
             let play = videoInfo.state === videoState.PAUSE ? false : true;
             // 调用父组件设置视频资源和播放状态
-            ctx.emit("resChange", res, currentTime, play);
+            ctx.emit("resChange", res, videoInfo.currentTime, play);
         }
 
         //设置倍速
