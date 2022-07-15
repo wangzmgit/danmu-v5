@@ -6,9 +6,11 @@
 ## 项目结构
 ```
 danmu_v5
+|--images 项目截图
 |--danmu-admin 后台管理
 |--go-danmu 后端
 |--vue-danmu 前端
+|--danmu-mobile 移动端
 ```
 
 ## 项目文档
@@ -50,3 +52,6 @@ docker run -itd --name danmuV5 -v /usr/danmaku:/danmu/go-danmu/file -p 9000:9000
 ![收藏夹](http://www.kuukaa.fun/img/collection.png)
 
 ![后台管理](http://www.kuukaa.fun/img/manage_about.png)
+
+## 移动端
+![移动端](http://www.kuukaa.fun/img/mobile.jpeg)
