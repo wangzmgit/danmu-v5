@@ -1,0 +1,36 @@
+{
+  "name": "danmu-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "@vicons/ionicons5": "^0.12.0",
+    "axios": "^0.27.2",
+    "core-js": "^3.8.3",
+    "hls.js": "^1.1.5",
+    "js-base64": "^3.7.2",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "naive-ui": "^2.29.1",
+    "vue": "^3.2.13",
+    "vue-dompurify-html": "^3.0.0",
+    "vue-router": "^4.0.3"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-plugin-router": "~5.0.0",
+    "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-service": "~5.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "typescript": "~4.5.5"
+  }
+}
