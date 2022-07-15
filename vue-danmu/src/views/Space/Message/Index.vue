@@ -85,11 +85,13 @@ export default {
         const getMsgList = () => {
             getMsgListAPI().then((res) => {
                 if (res.data.code === 2000) {
-                    msgList.value = res.data.data.messages;
-                    if (msgForm.fid !== 0) {
-                        initSendUser(msgForm.fid)
-                    } else if (msgList.value.length > 0) {
-                        getMsgContent(msgList.value[0], 0);
+                    const resMsg = res.data.data.messages;
+                    if (resMsg) {
+                        if (msgForm.fid !== 0) {
+                            initSendUser(msgForm.fid)
+                        } else if (msgList.value.length > 0) {
+                            getMsgContent(msgList.value[0], 0);
+                        }
                     }
                 }
             });

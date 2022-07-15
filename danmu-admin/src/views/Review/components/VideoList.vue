@@ -61,7 +61,7 @@ export default {
 
         const hls = ref(null);
         const initPlayer = (src, player) => {
-            hls.value = new Hls()
+            if (!hls.value) hls.value = new Hls();
             hls.value.loadSource(src);
             hls.value.attachMedia(player);
             hls.value.on(Hls.Events.ERROR, () => {

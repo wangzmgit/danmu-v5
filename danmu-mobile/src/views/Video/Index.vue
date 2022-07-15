@@ -80,7 +80,7 @@ export default defineComponent({
         const fold = ref(true);//折叠
         const loading = ref(true);
         const resources = ref([]);
-        const videoInfo = ref<videoType| null>(null);
+        const videoInfo = ref<videoType | null>(null);
 
         //获取视频信息
         const getVideoInfo = (vid: number) => {
@@ -101,9 +101,9 @@ export default defineComponent({
             })
         }
 
-        const changePart = (terget: number) => {
-            if (!resources.value[terget - 1]) {
-                part.value = terget;
+        const changePart = (target: number) => {
+            if (resources.value[target - 1]) {
+                part.value = target;
             }
             options.data = resources.value[part.value - 1];
             router.replace({ query: { p: part.value } });

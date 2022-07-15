@@ -130,9 +130,9 @@ export default {
             number.value = res.number;
         }
 
-        const changePart = (terget) => {
-            if (!resources.value[terget - 1]) {
-                part.value = terget;
+        const changePart = (target) => {
+            if (resources.value[target - 1]) {
+                part.value = target;
             }
             options.data = resources.value[part.value - 1];
             router.replace({ query: { p: part.value } });

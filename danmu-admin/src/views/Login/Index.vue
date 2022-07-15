@@ -73,9 +73,16 @@ export default {
         const adminLogin = () => {
             loginAPI(loginForm).then((res) => {
                 if (res.data.code === 2000) {
-                    storage.set("admin", res.data.data.token, 14 * 24 * 60);
-                    storage.set('adminInfo', res.data.data.user, 14 * 24 * 60);
-                    router.push({ name: "Home" });
+                    if (res.data.data.user.role in [1, 2, 3]) {
+                        storage.set("admin", res.data.data.token, 14 * 24 * 60);
+                        storage.set('adminInfo', res.data.data.user, 14 * 24 * 60);
+                        router.push({ name: "Home" });
+                    } else {
+                        notification.error({
+                            title: '权限不足',
+                            duration: 5000,
+                        })
+                    }
                 }
             }).catch((err) => {
                 notification.error({
