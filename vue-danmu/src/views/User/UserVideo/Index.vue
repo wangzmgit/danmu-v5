@@ -14,14 +14,13 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from "vue";
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref } from "vue";
 import { NPagination } from "naive-ui";
 import { useRouter, useRoute } from "vue-router";
 import useUserVideo from "@/hooks/user-video";
 
-export default {
-
+export default defineComponent({
 
     setup() {
         const uid = ref(0);
@@ -30,18 +29,18 @@ export default {
         const router = useRouter();
         const { count, videoList, getVideoListByUid } = useUserVideo();
 
-        const govideo = (vid) => {
+        const govideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
 
         onBeforeMount(() => {
-            uid.value = route.params.uid;
+            uid.value = Number(route.params.uid);
             getVideoListByUid(uid.value, page.value, 8);
         })
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getVideoListByUid(uid.value, page.value, 8);
         }
@@ -59,7 +58,7 @@ export default {
     components: {
         NPagination
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

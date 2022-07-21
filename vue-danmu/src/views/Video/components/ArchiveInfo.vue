@@ -33,19 +33,22 @@
     <collection-list v-if="showCollect" :vid="vid" @close="closeCollection"></collection-list>
 </template>
 
-<script>
+<script lang="ts">
 import { NIcon } from 'naive-ui';
+import { statType } from '@/types/archive';
 import CollectionList from './CollectionList.vue';
-import { reactive, ref, onBeforeMount } from 'vue';
+import { reactive, ref, onBeforeMount, defineComponent } from 'vue';
 import { getArchiveAPI, likeAPI, dislikeAPI } from '@/api/archive'
 
-export default {
+export default defineComponent({
     props: {
         vid: {
             type: Number,
+            required: true
         },
         stat: {
-            type: Object
+            type: Object as () => statType,
+            required: true
         },
     },
     setup(props) {
@@ -84,7 +87,7 @@ export default {
         }
 
         //关闭收藏夹回调
-        const closeCollection = (val) => {
+        const closeCollection = (val: number) => {
             if (val === 1) {
                 stat.value.collect++;
                 archive.is_collect = true;
@@ -113,7 +116,7 @@ export default {
         NIcon,
         CollectionList
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

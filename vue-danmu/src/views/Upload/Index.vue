@@ -10,15 +10,15 @@
     </div>
 </template>
 
-<script>
-import { h, ref, onBeforeMount } from "vue";
+<script lang="ts">
+import { h, ref, onBeforeMount, defineComponent } from "vue";
 import { NIcon, NMenu } from "naive-ui";
 import { RouterLink, useRoute } from 'vue-router';
 import HeaderBar from '@/components/HeaderBar.vue';
 import { BookOutline, VideocamOutline, ListOutline } from "@vicons/ionicons5";
 
 
-export default {
+export default defineComponent({
     setup() {
         const route = useRoute();
         const defaultOption = ref('');//默认激活菜单
@@ -67,7 +67,7 @@ export default {
             },
         ];
 
-        function renderIcon(icon) {
+        function renderIcon(icon: any) {
             return () => h(NIcon, null, { default: () => h(icon) });
         }
 
@@ -98,7 +98,7 @@ export default {
         NMenu,
         HeaderBar,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

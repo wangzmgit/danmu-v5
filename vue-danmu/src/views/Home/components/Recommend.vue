@@ -18,16 +18,17 @@
     </div>
 </template>
 
-<script>
-import config from '@/config.js';
+<script lang="ts">
+import config from '@/config';
 import { useRouter } from 'vue-router';
-import { onBeforeMount, ref } from 'vue'
-import { getRecommendVideoAPI } from "@/api/video.js"
+import { videoType } from '@/types/video';
+import { defineComponent, onBeforeMount, ref } from 'vue'
+import { getRecommendVideoAPI } from "@/api/video"
 import HoverMask from '@/components/HoverMask.vue'
-export default {
+export default defineComponent({
     setup() {
         const router = useRouter()
-        const recommendVideo = ref([]);
+        const recommendVideo = ref<Array<videoType>>([]);
 
         //获取推荐视频
         const getRecommendVideo = () => {
@@ -39,9 +40,9 @@ export default {
         }
 
         //页面跳转
-        const goVideo = (vid) => {
+        const goVideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
-            window.open(videoUrl.href,'_blank');
+            window.open(videoUrl.href, '_blank');
         }
 
         onBeforeMount(() => {
@@ -57,7 +58,7 @@ export default {
     components: {
         "hover-mask": HoverMask
     },
-};
+});
 </script>
 
 <style lang="less" scoped>

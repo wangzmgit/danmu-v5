@@ -58,7 +58,7 @@
 <script lang="ts">
 import Slider from './Slider.vue';
 import useConfig from '../hooks/config';
-import { ref, onMounted, reactive, defineComponent, SetupContext } from 'vue';
+import { ref, onMounted, reactive, defineComponent } from 'vue';
 import SvgIcon from "../components/SvgIcon.vue";
 import WButton from "../components/WButton.vue";
 
@@ -67,12 +67,13 @@ export default defineComponent({
     props: {
         left: {
             type: Number,
+            required: true
         },
         full: {
             type: Boolean
         }
     },
-    setup(props: any, ctx: SetupContext) {
+    setup(props, ctx) {
         const blockRef = ref<HTMLElement | null>(null);
         const timeSliderRef = ref<HTMLElement | null>(null);
         const { getConfig, setConfig } = useConfig();

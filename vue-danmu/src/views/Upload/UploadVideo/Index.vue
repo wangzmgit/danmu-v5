@@ -14,30 +14,33 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { onBeforeMount, ref, defineComponent } from 'vue';
 import { NStep, NSteps } from "naive-ui";
 import { getVideoStatusAPI } from '@/api/review';
 import { useRoute } from 'vue-router';
 import { useNotification } from 'naive-ui';
 import UploadInfo from './components/UploadInfo.vue';
 import UploadVideo from './components/UploadVideo.vue';
-export default {
-    setup(props) {
+export default defineComponent({
+    setup() {
         const current = ref(1);
-        const videoInfo = ref({});
-        const currentStatus = ref("process");
+        const videoInfo = ref({
+            vid: 0,
+            state: 0
+        });
+        const currentStatus = ref<"wait" | "error" | "finish" | "process">("process");
         const route = useRoute();
         const notification = useNotification();//通知
 
-        const infoFinish = (vid) => {
+        const infoFinish = (vid: number) => {
             videoInfo.value.vid = vid;
             current.value = 2;
         }
 
         onBeforeMount(() => {
-            const vid = route.params.vid;
-            const modify = route.query.modify;
+            const vid = Number(route.params.vid);
+            const modify = (route.query.modify || "").toString();
             if (vid) {
                 current.value = 4; //默认结果页
                 getVideoStatusAPI(vid).then((res) => {
@@ -66,7 +69,7 @@ export default {
         })
 
         //修改上传内容
-        const modifyUpload = (modify) => {
+        const modifyUpload = (modify: string) => {
             switch (modify) {
                 case "video":
                     current.value = 2;
@@ -93,7 +96,7 @@ export default {
         UploadInfo,
         UploadVideo
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

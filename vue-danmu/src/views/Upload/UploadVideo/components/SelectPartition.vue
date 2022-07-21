@@ -7,30 +7,31 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from "vue";
+<script lang="ts">
+import { onBeforeMount, ref, defineComponent } from "vue";
 import { getPartitionAPI } from '@/api/partition';
 import { NSelect, useNotification } from 'naive-ui';
+import { partitionType } from "@/types/partition";
 
-export default {
+export default defineComponent({
     emits: ["selected"],
     setup(_props, ctx) {
-        const partitions = ref([]);//分区
-        const subpartitions = ref([]);//二级分区
+        const partitions = ref<Array<partitionType>>([]);//分区
+        const subpartitions = ref<Array<partitionType>>([]);//二级分区
         const showSubpartition = ref(false);//是否显示二级分区
         const notification = useNotification();//
 
         //改变分区
-        const partitionChange = (fid) => {
-            getPartitionList(fid);
+        const partitionChange = (parentId: number) => {
+            getPartitionList(parentId);
             showSubpartition.value = true;
         }
 
         //获取分区列表
-        const getPartitionList = (fid) => {
-            getPartitionAPI(fid).then((res) => {
+        const getPartitionList = (parentId: number) => {
+            getPartitionAPI(parentId).then((res) => {
                 if (res.data.code === 2000) {
-                    if (fid === 0) {
+                    if (parentId === 0) {
                         partitions.value = res.data.data.partitions;
                     } else {
                         subpartitions.value = res.data.data.partitions;
@@ -45,7 +46,7 @@ export default {
             });
         }
 
-        const selectedPartition = (value) => {
+        const selectedPartition = (value: number) => {
             ctx.emit("selected", value);
         }
 
@@ -66,8 +67,7 @@ export default {
     components: {
         NSelect
     }
-}
-
+});
 </script>
 
 <style lang="less" scoped>

@@ -36,7 +36,7 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { storeToRefs } from 'pinia';
 import { h, ref, watch, onBeforeMount } from "vue";
 import { getUserInfoByIDAPI } from '@/api/user';
@@ -46,13 +46,15 @@ import { useLoginStore } from '@/store/login-store';
 import HeaderBar from '@/components/HeaderBar.vue';
 import { Male, Female, Person } from "@vicons/ionicons5";
 import { NIcon, NMenu, NButton, NAvatar, useNotification } from "naive-ui";
+import { userInfoType } from '@/types/user';
 
 export default {
     setup() {
-        const userInfo = ref({
+        const userInfo = ref<userInfoType>({
+            uid: 0,
             avatar: "",
             name: "",
-            sing: "",
+            sign: "",
             gender: 0,
         });
         const menuOptions = [
@@ -105,7 +107,7 @@ export default {
         const notification = useNotification();//通知
 
         //获取用户信息
-        const getUserInfoByID = (uid) => {
+        const getUserInfoByID = (uid:number) => {
             getUserInfoByIDAPI(uid).then((res) => {
                 if (res.data.code === 2000) {
                     userInfo.value = res.data.data.user;
@@ -156,7 +158,8 @@ export default {
         }
 
         onBeforeMount(() => {
-            getUserInfoByID(route.params.uid);
+            const uid = Number(route.params.uid);
+            getUserInfoByID(uid);
             switch (route.name) {
                 case 'UserFollowing':
                     defaultOption.value = 'following';
@@ -168,7 +171,7 @@ export default {
                     defaultOption.value = 'video';
                     break;
             }
-            getFollowStatus(route.params.uid);
+            getFollowStatus(uid);
         })
 
         return {

@@ -12,7 +12,7 @@
                 <div class="card-center">
                     <p class="title" @click="goCollectionDetails(item.id)">{{ item.name }}</p>
                     <span class="desc">简介：{{ item.desc }}</span>
-                    <span class="desc">创建于：<n-time :time="new Date(item.created_at)"></n-time></span>
+                    <span class="desc">创建于：<n-time :time="new Date(item.created_at!)"></n-time></span>
                 </div>
                 <div class="card-right">
                     <n-icon class="edit" size="20" @click="beforeEdit(item)">
@@ -52,19 +52,20 @@
     </n-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router';
-import { ref, reactive, onBeforeMount } from 'vue';
-import useCollection from '@/hooks/collection.js';
-import CoverUpload from "@/components/CoverUpload";
+import useCollection from '@/hooks/collection';
+import { collectionType, modifyCollectionType} from '@/types/collect';
+import CoverUpload from "@/components/CoverUpload.vue";
 import { CreateOutline, TrashOutline } from '@vicons/ionicons5';
+import { ref, reactive, onBeforeMount, defineComponent } from 'vue';
 import { modifyCollectionAPI, deleteCollectionAPI } from '@/api/collect';
 import {
     NTime, NIcon, NForm, NFormItem, NButton, NInput, NSwitch,
     NScrollbar, NPopconfirm, NDrawer, NDrawerContent, useNotification
 } from 'naive-ui';
 
-export default {
+export default defineComponent({
     setup() {
         //简介输入框大小
         const descSize = {
@@ -72,18 +73,18 @@ export default {
             maxRows: 3
         }
         const active = ref(false);//显示编辑抽屉
-        const collectionInfo = reactive({
+        const collectionInfo = reactive<modifyCollectionType>({
             id: 0,
             cover: "",
             name: "",
             desc: "",
-            open: false
+            open: false,
         });
         const notification = useNotification();
         const { collections, getCollectionList } = useCollection();
 
         //删除收藏夹
-        const deleteClick = (id, index) => {
+        const deleteClick = (id:number, index:number) => {
             deleteCollectionAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     collections.value.splice(index, 1);
@@ -91,17 +92,17 @@ export default {
             })
         }
 
-        const beforeEdit = (item) => {
+        const beforeEdit = (item:collectionType) => {
             collectionInfo.id = item.id;
-            collectionInfo.cover = item.cover;
-            collectionInfo.name = item.name;
-            collectionInfo.desc = item.desc;
-            collectionInfo.open = item.open;
+            collectionInfo.cover = item.cover!;
+            collectionInfo.name = item.name!;
+            collectionInfo.desc = item.desc!;
+            collectionInfo.open = item.open!;
             active.value = true;
         }
 
         //封面上传完成
-        const finishUpload = (cover) => {
+        const finishUpload = (cover:string) => {
             collectionInfo.cover = cover;
         }
 
@@ -128,7 +129,7 @@ export default {
 
         //前往收藏夹详情
         const router = useRouter();
-        const goCollectionDetails = (id) => {
+        const goCollectionDetails = (id:number) => {
             router.push({ name: "CollectionDetails", params: { id: id } });
         }
 
@@ -165,7 +166,7 @@ export default {
         TrashOutline,
         CreateOutline
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

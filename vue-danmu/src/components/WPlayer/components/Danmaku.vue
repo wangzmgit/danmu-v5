@@ -2,31 +2,32 @@
   <div class="danmaku-container" ref="danmakuRef"></div>
 </template>
 
-<script>
-import { ref, reactive } from "vue";
+<script lang="ts">
+import { ref, reactive, defineComponent } from "vue";
+import { danmakuItemType, drawDanmakuType } from "../types/danmaku";
 
-export default {
+export default defineComponent({
   props: {
     list: {
-      type: Array
+      type: Array as () => Array<danmakuItemType>
     }
   },
   setup(props) {
-    const danmakuRef = ref(null);
+    const danmakuRef = ref<HTMLElement | null>(null);
     const paused = ref(false);//是否暂停
-    const danmaku = ref([]);//当前弹幕
+    const danmaku = ref<HTMLElement[]>([]);//当前弹幕
     const currentTime = ref(0);//当前时间
     const danmakuTunnel = reactive({
-      row: [], //轨道结束的时间
-      top: [],
-      bottom: [],
+      row: [] as Array<number>, //轨道结束的时间
+      top: [] as Array<number>,
+      bottom: [] as Array<number>,
     })
 
     // 播放暂停
-    const startOrPause = (start) => {
+    const startOrPause = (start: boolean) => {
       const state = start ? 'running' : 'paused';
       for (let i = 0; i < danmaku.value.length; i++) {
-        danmaku.value[i].style.animationPlayState = state;
+        (danmaku.value[i] as HTMLElement).style.animationPlayState = state;
       }
       paused.value = !start;
     }
@@ -36,42 +37,42 @@ export default {
       danmakuTunnel.row = [];
       danmakuTunnel.top = [];
       danmakuTunnel.bottom = [];
-      danmakuRef.value.innerHTML = "";
+      danmakuRef.value!.innerHTML = "";
     }
 
     //设置弹幕不透明度
-    const setOpacity = (opacity) => {
+    const setOpacity = (opacity: number) => {
       if (danmakuRef.value) {
-        danmakuRef.value.style.opacity = parseFloat(opacity) * 0.01;
+        danmakuRef.value.style.opacity = (opacity * 0.01).toString();
       }
     }
 
     //更新时间
-    const timeUpdate = (time) => {
+    const timeUpdate = (time: number) => {
       if (Math.round(time) !== currentTime.value) {
         currentTime.value = Math.round(time);
         //绘制弹幕
         if (!props.list) {
           return;
         }
-        const currentDanmaku = props.list.filter((item) => {
+        const currentDanmaku = props.list.filter((item: danmakuItemType) => {
           return item.time === currentTime.value;
         })
 
-        currentDanmaku.map((item) => {
-          drawDanmaku(item);
+        currentDanmaku.map((item: danmakuItemType) => {
+          drawDanmaku(item, false);
         })
       }
     }
 
     //获取滚动弹道
-    const getRowTunnel = (text) => {
+    const getRowTunnel = (text: string) => {
       //当前弹幕结束时间
       let duration = 30 - text.length * 0.5;
-      let width = danmakuRef.value.offsetWidth;
+      let width = danmakuRef.value!.offsetWidth;
       duration = Math.ceil((width + text.length * 20) / (3000 / duration)) + currentTime.value;
       //计算弹道数量
-      let tunnnel = Math.floor(danmakuRef.value.offsetHeight / 26);
+      let tunnnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
       //遍历轨道
       for (let i = 0; i < danmakuTunnel.row.length; i++) {
         //如果当前轨道结束时间小于新弹幕的结束时间
@@ -91,11 +92,11 @@ export default {
     }
 
     //获取固定弹道
-    const getFixedTunnel = (type) => {
+    const getFixedTunnel = (type: number) => {
       //当前弹幕结束时间
       let duration = currentTime.value + 5;
       //计算弹道数量
-      let tunnnel = Math.floor(danmakuRef.value.offsetHeight / 26);
+      let tunnnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
       switch (type) {
         case 1:
           //遍历轨道
@@ -134,49 +135,52 @@ export default {
       return Math.round(Math.random() * tunnnel);
     }
 
-    const drawDanmaku = ({ text, color, type }, send = false) => {
-      let width = danmakuRef.value.offsetWidth;
+    const drawDanmaku = (draw: drawDanmakuType, send: boolean) => {
+      let width = danmakuRef.value!.offsetWidth;
       var item = document.createElement("span");
-      var content = document.createTextNode(text);
-      item.style.color = color;
+      var content = document.createTextNode(draw.text);
+      item.style.color = draw.color;
       item.appendChild(content);
       item.className = "danmaku-item";
       //滚动弹幕
-      if (type == 0) {
+      if (draw.type == 0) {
         //设置轨道
-        item.style.top = String(getRowTunnel(text) * 26) + "px";
+        let rowTunnel = getRowTunnel(draw.text);
+        item.style.top = `${rowTunnel * 26}px`;
         item.classList.add("danmaku-row");
         item.style.transform = `translateX(-${width}px)`;
-        danmaku.value.push(item);
-        danmakuRef.value.appendChild(item);
+        danmaku.value[rowTunnel] = item;
+        danmakuRef.value!.appendChild(item);
         item.addEventListener("animationend", () => {
-          danmaku.value.splice(item);
-          danmakuRef.value.removeChild(item);
+          danmaku.value.splice(rowTunnel);
+          danmakuRef.value!.removeChild(item);
         });
         if (send) {
           item.style.border = "1px solid red";
         }
         item.classList.add("danmaku-row-move");
-      } else if (type == 1) {
+      } else if (draw.type == 1) {
+        let topTunnel = getFixedTunnel(draw.type);
         item.style.width = "100%";
         item.style.textAlign = "center";
-        item.style.top = String(getFixedTunnel(1) * 26) + "px";
-        danmaku.value.push(item);
-        danmakuRef.value.appendChild(item);
+        item.style.top = `${topTunnel * 26}px`;
+        danmaku.value[topTunnel] = item;
+        danmakuRef.value!.appendChild(item);
         item.addEventListener("animationend", () => {
-          danmaku.value.splice(item);
-          danmakuRef.value.removeChild(item);
+          danmaku.value.splice(topTunnel);
+          danmakuRef.value!.removeChild(item);
         });
         item.classList.add("danmaku-center-move");
-      } else if (type == 2) {
+      } else if (draw.type == 2) {
+        let bottomTunnel = getFixedTunnel(draw.type);
         item.style.width = "100%";
         item.style.textAlign = "center";
-        item.style.bottom = String(getFixedTunnel(2) * 26) + "px";
-        danmaku.value.push(item);
-        danmakuRef.value.appendChild(item);
+        item.style.bottom = `${bottomTunnel * 26}px`;
+        danmaku.value[bottomTunnel] = item;
+        danmakuRef.value!.appendChild(item);
         item.addEventListener("animationend", () => {
-          danmaku.value.splice(item);
-          danmakuRef.value.removeChild(item);
+          danmaku.value.splice(bottomTunnel);
+          danmakuRef.value!.removeChild(item);
         });
         item.classList.add("danmaku-center-move");
       }
@@ -194,7 +198,7 @@ export default {
       setOpacity
     }
   }
-};
+});
 </script>
 
 <style>

@@ -9,11 +9,11 @@
     </div>
 </template>
 
-<script>
-import { onMounted, computed, ref } from 'vue';
+<script lang="ts">
+import { onMounted, computed, ref, defineComponent } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 
-export default {
+export default defineComponent({
     setup() {
         const isInfo = ref(true);
         const route = useRoute();
@@ -23,7 +23,7 @@ export default {
             return isInfo.value ? "" : "security-active";
         })
 
-        const setRouter = (isInfoPage) => {
+        const setRouter = (isInfoPage: boolean) => {
             if (isInfo.value !== isInfoPage) {
                 //设置当前选中并修改页面
                 isInfo.value = isInfoPage;
@@ -43,7 +43,7 @@ export default {
             activeClass
         }
     },
-};
+});
 </script>
 
 <style lang="less" scoped>

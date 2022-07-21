@@ -11,15 +11,16 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from "vue";
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { getVideoListAPI } from "@/api/video";
+import { baseVideoType } from "@/types/video";
 
-export default {
+export default defineComponent({
     setup() {
         const router = useRouter();
-        const videoList = ref([]);
+        const videoList = ref<Array<baseVideoType>>([]);
 
         const getVideoList = () => {
             getVideoListAPI(1, 10, 0).then((res) => {
@@ -29,7 +30,7 @@ export default {
             })
         }
 
-        const govideo = (vid) => {
+        const govideo = (vid:number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
@@ -44,7 +45,7 @@ export default {
         }
     },
 
-};
+});
 </script>
 
 <style lang="less" scoped>

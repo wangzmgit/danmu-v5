@@ -3,13 +3,13 @@
     <follow-list :following="following" :uid="userInfo.uid"></follow-list>
 </template>
 
-<script>
+<script lang="ts">
 import { useRoute } from "vue-router";
-import storage from "@/utils/stored-data.js";
-import FollowList from "@/components/FollowList";
-import { ref, computed, onBeforeMount } from "vue";
+import storage from "@/utils/stored-data";
+import FollowList from "@/components/FollowList.vue";
+import { ref, computed, onBeforeMount, defineComponent } from "vue";
 
-export default {
+export default defineComponent({
 
     setup() {
         const route = useRoute();
@@ -33,7 +33,7 @@ export default {
     components: {
         FollowList,
     }
-};
+});
 </script>
 
 <style scoped>

@@ -13,10 +13,12 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { NResult, NButton } from 'naive-ui';
-export default {
+
+export default defineComponent({
     setup() {
         const router = useRouter();
         const goHome = () => {
@@ -31,7 +33,7 @@ export default {
         NResult,
         NButton
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

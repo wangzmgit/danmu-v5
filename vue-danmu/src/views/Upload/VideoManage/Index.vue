@@ -43,19 +43,20 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router';
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, defineComponent } from 'vue';
 import { getMyVideoAPI, deleteVideoAPI } from '@/api/video';
 import { CreateOutline, TrashOutline } from '@vicons/ionicons5';
 import { NTime, NIcon, NPagination, NButton, NPopconfirm, useNotification } from 'naive-ui';
+import { videoType } from '@/types/video';
 
-export default {
+export default defineComponent({
     setup() {
         const pageSize = 5;
         const page = ref(1);
         const count = ref(0);
-        const videoList = ref([]);
+        const videoList = ref<Array<videoType>>([]);
 
         const notification = useNotification();
 
@@ -76,7 +77,7 @@ export default {
         }
 
         //删除视频
-        const deleteVideo = (id) => {
+        const deleteVideo = (id: number) => {
             deleteVideoAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getMyVideo();
@@ -90,20 +91,20 @@ export default {
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getMyVideo();
         }
 
         //前往视频详情
         const router = useRouter();
-        const govideo = (vid) => {
+        const govideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
 
         //前往修改视频
-        const modifyVideo = (vid, status) => {
+        const modifyVideo = (vid: number, status: string) => {
             router.push({ name: "UploadVideoHome", params: { vid: vid }, query: { modify: status } });
         }
 
@@ -131,7 +132,7 @@ export default {
         TrashOutline,
         CreateOutline
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

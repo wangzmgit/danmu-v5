@@ -44,7 +44,7 @@
                 <svg-icon class="control-icon" icon="volume"></svg-icon>
             </w-button>
             <div class="volume" v-show="menus.volume">
-                <slider class="slider" :value="videoInfo.volume" vertical @changeValue="setVolume"></slider>
+                <slider class="slider" :val="videoInfo.volume" vertical @changeValue="setVolume"></slider>
             </div>
             <w-button class="right-icon" type="text" @click="fullScreen">
                 <svg-icon class="control-icon" icon="fullScreen"></svg-icon>
@@ -53,24 +53,25 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Slider from './Slider.vue';
 import useConfig from '../hooks/config';
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive, defineComponent } from 'vue';
 import SvgIcon from "../components/SvgIcon.vue";
 import WButton from "../components/WButton.vue";
 
 
-export default {
+export default defineComponent({
     emits: ['playChange', 'resChange', 'full', 'progressChange', 'volumeChange', 'speedChange'],
     props: {
         left: {
             type: Number,
+            required: true
         }
     },
     setup(props, ctx) {
-        const blockRef = ref(null);
-        const timeSliderRef = ref(null);
+        const blockRef = ref<HTMLElement | null>(null);
+        const timeSliderRef = ref<HTMLElement | null>(null);
         const { getConfig, setConfig } = useConfig();
         const playerConfig = getConfig();
 
@@ -81,7 +82,7 @@ export default {
             REPLAY: "replay"
         }
 
-        const menus = reactive({
+        const menus: any = reactive({
             speed: false,
             volume: false,
             res: false,
@@ -100,13 +101,13 @@ export default {
         })
 
         //初始化
-        const initControl = (val, maxRes) => {
+        const initControl = (val: number, maxRes: number) => {
             videoInfo.duration = val;
             videoInfo.maxRes = maxRes;
         }
 
         //时间改变
-        const timeUpdate = (current, loaded) => {
+        const timeUpdate = (current: number, loaded: number) => {
             videoInfo.currentTime = current;
             videoInfo.loadedTime = loaded;
         }
@@ -117,7 +118,7 @@ export default {
         }
 
         //计算播放和加载进度
-        const schedule = (time) => {
+        const schedule = (time: number) => {
             return Math.round((time / videoInfo.duration) * 10000) / 100;
         }
 
@@ -140,22 +141,22 @@ export default {
         }
 
         //点击滑动条
-        const clickSlider = (e) => {
-            let id = e.target.id;
+        const clickSlider = (e: MouseEvent) => {
+            let id = (e.target as HTMLElement).id;
             let slider = timeSliderRef.value;
             if (id == "slider" || id == "loaded" || id == "played") {
                 if (videoInfo.state === videoState.REPLAY) {
                     videoInfo.state = videoState.PLAY;
                 }
-                videoInfo.currentTime = (e.offsetX / slider.clientWidth) * videoInfo.duration;
+                videoInfo.currentTime = (e.offsetX / slider!.clientWidth) * videoInfo.duration;
                 ctx.emit('progressChange', videoInfo.currentTime);
             }
         }
 
         // 滑动滑动条
         const slideTimeLine = () => {
-            blockRef.value.onmousedown = function () {
-                let width = timeSliderRef.value.offsetWidth;
+            blockRef.value!.onmousedown = function () {
+                let width = timeSliderRef.value!.offsetWidth;
                 document.onmousemove = function (e) {
                     //计算新的百分比
                     let percentage = Math.round(((e.clientX - props.left) / width) * 100) / 100;
@@ -172,7 +173,7 @@ export default {
         }
 
         //快进或快退 方向dir(true前进，false后退) 时间n
-        const fastForward = (dir, n) => {
+        const fastForward = (dir: boolean, n: number) => {
             let dur = videoInfo.duration;
             let current = videoInfo.currentTime;
             if (dir) {
@@ -183,16 +184,16 @@ export default {
         }
 
         //转为时间文本
-        const toTimeText = (time) => {
-            let m = parseInt(time / 60);
-            let s = parseInt(time % 60);
-            m = m < 10 ? "0" + m : m;
-            s = s < 10 ? "0" + s : s;
-            return m + ":" + s;
+        const toTimeText = (time: number) => {
+            let m: number = Math.floor(time / 60);
+            let s: number = Math.floor(time % 60);
+            const mm = m < 10 ? "0" + m : m;
+            const ss = s < 10 ? "0" + s : s;
+            return mm + ":" + ss;
         }
 
         //打开或关闭菜单
-        const showMenu = (name) => {
+        const showMenu = (name: any) => {
             //关闭除了name以外所有的菜单
             for (let key in menus) {
                 if (key == name) {
@@ -204,7 +205,7 @@ export default {
         }
 
         //设置分辨率
-        const setRes = (res) => {
+        const setRes = (res: number) => {
             if (res === 0) return;
             if (videoInfo.currentRes === res) return;
             //设置分辨率
@@ -216,7 +217,7 @@ export default {
         }
 
         //设置倍速
-        const setSpeed = (speed) => {
+        const setSpeed = (speed: number) => {
             if (speed != 1) {
                 videoInfo.speedText = speed + "x";
             } else {
@@ -227,7 +228,7 @@ export default {
         }
 
         //改变音量
-        const setVolume = (volume) => {
+        const setVolume = (volume: number) => {
             setConfig('volume', volume);
             ctx.emit('volumeChange', volume);
         }
@@ -267,7 +268,7 @@ export default {
         SvgIcon,
         WButton,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

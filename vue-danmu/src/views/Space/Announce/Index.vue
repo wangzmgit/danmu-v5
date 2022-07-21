@@ -16,19 +16,19 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref } from 'vue';
 import { NPagination, NTime } from 'naive-ui';
 import { LinkOutline } from '@vicons/ionicons5';
-import { getAnnounceAPI } from '@/api/announce.js';
+import { getAnnounceAPI } from '@/api/announce';
 
-export default {
+export default defineComponent({
     setup() {
         const page = ref(1);
         const count = ref(0);
         const announceList = ref([]);
 
-        const linkTo = (url) => {
+        const linkTo = (url: string) => {
             window.open(url, "_blank");
         }
 
@@ -42,7 +42,7 @@ export default {
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getAnnounce();
         }
@@ -64,7 +64,7 @@ export default {
         NPagination,
         LinkOutline
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { NSlider } from 'naive-ui'
-import { defineComponent, SetupContext } from 'vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
     emits: ['changeValue'],
@@ -17,7 +17,7 @@ export default defineComponent({
             default: false
         }
     },
-    setup(props: any, ctx: SetupContext) {
+    setup(props, ctx) {
         const changeValue = (val: number) => {
             ctx.emit('changeValue', val);
         }

@@ -1,14 +1,15 @@
 <template>
-    <n-slider v-model:value="value" :vertical="vertical" @update:value="changeValue"></n-slider>
+    <n-slider v-model:value="current" :vertical="vertical" @update:value="changeValue"></n-slider>
 </template>
 
-<script>
+<script lang="ts">
 import { NSlider } from 'naive-ui'
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
     emits: ['changeValue'],
     props: {
-        value: {
+        val: {
             type: Number
         },
         vertical: {
@@ -16,17 +17,18 @@ export default {
             default: false
         }
     },
-    setup(_props, ctx) {
-        const changeValue = (val) => {
+    setup(props, ctx) {
+        const changeValue = (val: number) => {
             ctx.emit('changeValue', val);
         }
 
         return {
+            current: props.val,
             changeValue
         }
     },
     components: {
         NSlider
     }
-}
+});
 </Script>

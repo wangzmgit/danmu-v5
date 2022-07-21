@@ -40,16 +40,16 @@
     </div>
 </template>
 
-<script>
-import { ref, computed, onMounted } from "vue";
-import storage from "@/utils/stored-data.js";
+<script lang="ts">
+import { ref, computed, onMounted, defineComponent } from "vue";
+import storage from "@/utils/stored-data";
 import { NIcon, NAvatar, useNotification } from 'naive-ui';
 import { useRouter } from "vue-router";
 import { getFollowDataAPI } from '@/api/follow';
 import { Person, Female, Male } from '@vicons/ionicons5';
-import UserVideoList from './components/UserVideoList'
+import UserVideoList from './components/UserVideoList.vue'
 
-export default {
+export default defineComponent({
     setup() {
         const count = ref(0);
         const followers = ref(0);
@@ -62,17 +62,17 @@ export default {
         })
 
         //前往关注和粉丝页面
-        const goPage = (name) => {
+        const goPage = (name: string) => {
             router.push({ name: name });
         }
 
         //设置视频数量
-        const setCount = (value) => {
+        const setCount = (value: number) => {
             count.value = value;
         }
 
         //获取关注数和粉丝数
-        const getFollowData = (id) => {
+        const getFollowData = (id: number) => {
             getFollowDataAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     followers.value = res.data.data.followers
@@ -109,7 +109,7 @@ export default {
         Female,
         UserVideoList
     },
-};
+});
 </script>
 <style lang="less" scoped>
 .user-card {

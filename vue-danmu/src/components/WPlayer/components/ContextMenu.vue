@@ -4,7 +4,7 @@
       <li class="menu-item" @click="videoMirror()">
         <span>镜像</span>
       </li>
-      <li class="menu-item" @mouseover="showExplain = true" @mouseleave="showExplain = false" >
+      <li class="menu-item" @mouseover="showExplain = true" @mouseleave="showExplain = false">
         <span>快捷键说明</span>
       </li>
       <li class="menu-item">
@@ -32,20 +32,21 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue';
-export default {
+<script lang="ts">
+import { ref, defineComponent } from 'vue';
+export default defineComponent({
   emits: ['mirror'],
   setup(_props, ctx) {
     const showMenu = ref(false);//是否显示菜单
     const showExplain = ref(false);//显示快捷键说明
-    const resolution = ref(0);//分辨率
+    const resolution = ref("unknown");//分辨率
+
     //开启右键菜单
-    const openMenu = (e, video) => {
+    const openMenu = (e: any, video: HTMLVideoElement) => {
       let menu = document.getElementById("menu");
-      menu.style.left = e.offsetX + "px";
-      menu.style.top = e.offsetY + "px";
-      resolution.value = video.videoWidth + "X" + video.videoHeight
+      menu!.style.left = e.offsetX + "px";
+      menu!.style.top = e.offsetY + "px";
+      resolution.value = `${video.videoWidth} X ${video.videoHeight}`
       showMenu.value = true;
     }
 
@@ -74,7 +75,7 @@ export default {
       videoMirror,
     }
   }
-};
+});
 </script>
 
 <style lang="less" scoped>

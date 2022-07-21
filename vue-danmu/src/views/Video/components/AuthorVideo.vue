@@ -11,16 +11,17 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from "vue";
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import useUserVideo from "@/hooks/user-video";
 import { NTime } from "naive-ui";
 
-export default {
+export default defineComponent({
     props: {
         uid: {
-            type: Number
+            type: Number,
+            required: true
         }
     },
     setup(props) {
@@ -28,7 +29,7 @@ export default {
         const router = useRouter();
         const { videoList, getVideoListByUid } = useUserVideo();
 
-        const govideo = (vid) => {
+        const govideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
@@ -47,7 +48,7 @@ export default {
         NTime
     }
 
-}
+});
 </script>
 
 <style lang="less" scoped>

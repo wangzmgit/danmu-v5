@@ -15,7 +15,7 @@
         <!--右侧-->
         <div class="msg-right">
             <div class="left-top right-top">{{ targetUser.name }}</div>
-            <div id="msgBox" class="msg-main">
+            <div ref="msgBox" class="msg-main">
                 <div class="content-box" v-for="(item, index) in msgDetails" :key="index">
                     <!--自己发送的-->
                     <div v-if="item.from_id == userInfo.uid">
@@ -48,25 +48,26 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { Base64 } from 'js-base64';
 import { useRoute } from 'vue-router';
 import storage from '@/utils/stored-data';
-import { MsgSocketURL } from '@/utils/request.js';
-import { getUserInfoByIDAPI } from '@/api/user.js';
-import { getMsgListAPI, getMsgDetailsAPI, readMsgAPI, sendMsgAPI } from '@/api/message.js';
+import { MsgSocketURL } from '@/utils/request';
+import { getUserInfoByIDAPI } from '@/api/user';
+import { getMsgListAPI, getMsgDetailsAPI, readMsgAPI, sendMsgAPI } from '@/api/message';
 import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NInput, NButton, NTime, useNotification } from 'naive-ui';
-import { onBeforeMount, onBeforeUnmount, reactive, ref, computed, nextTick } from 'vue';
+import { onBeforeMount, onBeforeUnmount, reactive, ref, computed, nextTick, defineComponent } from 'vue';
+import { messageListType, messageDetailsType } from '@/types/message';
 
-export default {
+export default defineComponent({
     setup() {
         const descSize = {
             minRows: 4,
             maxRows: 4
         }
-        const msgList = ref([]);
-        const msgDetails = ref([]);
+        const msgList = ref<Array<messageListType>>([]);
+        const msgDetails = ref<Array<messageDetailsType>>([]);
         const msgForm = reactive({
             fid: 0,
             content: ''
@@ -98,7 +99,7 @@ export default {
         }
 
         //初始化发送的用户
-        const initSendUser = (fid) => {
+        const initSendUser = (fid: number) => {
             //遍历当前消息列表查找用户
             for (let i = 0; i < msgList.value.length; i++) {
                 if (msgList.value[i].uid === fid) {
@@ -133,7 +134,7 @@ export default {
             avatar: ""
         })
 
-        const getMsgContent = (item, index) => {
+        const getMsgContent = (item: messageListType, index: number) => {
             page.value = 1;
             noMore.value = false;
             msgDetails.value = [];
@@ -147,7 +148,7 @@ export default {
         }
 
         //获取更多消息
-        const getMoreMsgContent = (fid) => {
+        const getMoreMsgContent = (fid: number) => {
             loading.value = true;
             getMsgDetailsAPI(fid, page.value, 10).then((res) => {
                 if (res.data.code === 2000) {
@@ -165,24 +166,22 @@ export default {
         }
 
         //加载更多
-        const lazyLoading = (e) => {
-            if (e.target.id === "msgBox") {
-                let scroll = document.getElementById("msgBox");
-                if (scroll.scrollTop < 30 && !loading.value && !noMore.value) {
-                    page.value++;
-                    allowToBottom.value = false;
-                    getMoreMsgContent(msgForm.fid);
-                }
+        const msgBox = ref<HTMLElement | null>(null);
+        const lazyLoading = () => {
+            const scrollTop = msgBox.value?.scrollTop || Infinity;
+            if (scrollTop < 30 && !loading.value && !noMore.value) {
+                page.value++;
+                allowToBottom.value = false;
+                getMoreMsgContent(msgForm.fid);
             }
         }
 
         //到达底部
         const toBottom = () => {
-            let scroll = document.getElementById("msgBox");
             if (allowToBottom.value) {
-                scroll.scrollTop = scroll.scrollHeight;
+                msgBox.value!.scrollTop = msgBox.value!.scrollHeight;
             } else {
-                scroll.scrollTop = 100;
+                msgBox.value!.scrollTop = 100;
                 allowToBottom.value = true;
             }
         }
@@ -201,8 +200,10 @@ export default {
             sendMsgAPI(msgForm).then((res) => {
                 if (res.data.code === 2000) {
                     msgDetails.value.push({
+                        fid: 0,
                         from_id: userInfo.value.uid,
-                        content: msgForm.content
+                        content: msgForm.content,
+                        created_at: ""
                     });
                     msgForm.content = "";
                     sendLoading.value = false;
@@ -223,7 +224,7 @@ export default {
 
         //websocket
         const SocketURL = ref("");
-        const websocket = ref(null);
+        const websocket = ref<WebSocket | null>(null);
         //初始化weosocket
         const initWebSocket = () => {
             const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
@@ -240,18 +241,20 @@ export default {
         }
 
         //数据接收
-        const websocketOnmessage = (e) => {
+        const websocketOnmessage = (e: any) => {
             const res = JSON.parse(Base64.decode(e.data));
             if (msgForm.fid === res.fid) {
                 msgDetails.value.push({
+                    fid: msgForm.fid,
                     from_id: res.fid,
                     content: res.content,
+                    created_at: ""
                 });
                 nextTick(() => {
                     toBottom()
                 })
             } else {
-                msgForm.fid = fid;
+                msgForm.fid = res.fid;
                 initSendUser(res.fid);
             }
         }
@@ -292,7 +295,7 @@ export default {
         NButton,
         CommonAvatar
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

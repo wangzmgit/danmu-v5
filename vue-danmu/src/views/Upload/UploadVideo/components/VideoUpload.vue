@@ -22,19 +22,20 @@
     </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
 import config from "@/config";
-import storage from "@/utils/stored-data.js";
+import storage from "@/utils/stored-data";
 import { VideoUrl as videoUrl } from "@/utils/request";
 import { ArchiveOutline as ArchiveIcon } from "@vicons/ionicons5";
 import { NIcon, NUpload, NUploadDragger, NText, NP, NProgress, useNotification } from 'naive-ui';
 
-export default {
+export default defineComponent({
     emits: ["finish"],
     props: {
         vid: {
             type: Number,
+            required: true
         }
     },
     setup(props, ctx) {
@@ -42,7 +43,7 @@ export default {
         const headers = {
             Authorization: "Bearer " + storage.get("token"),
         }
-        const uploadData = {
+        const uploadData: any = {
             vid: props.vid
         };
         const percent = ref(0);//上传百分比
@@ -50,7 +51,7 @@ export default {
         const notification = useNotification();//通知
 
         //上传之前的回调
-        const beforeUploadVideo = (options) => {
+        const beforeUploadVideo = async (options: any) => {
             const file = options.file;
             const isJpgOrPng = file.type === "video/mp4";
             if (!isJpgOrPng) {
@@ -72,7 +73,7 @@ export default {
         }
 
         //上传变化的回调
-        const handleChange = (options) => {
+        const handleChange = (options: any) => {
             uploading.value = true;
             const status = options.file.status;
             if (status === "finished") {
@@ -118,7 +119,7 @@ export default {
         //图标
         ArchiveIcon
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -21,20 +21,22 @@
     </send-danmaku>
 </template>
 
-<script>
-import { onMounted, onBeforeMount, ref, onBeforeUnmount } from 'vue'
+<script lang="ts">
 import useHls from './hooks/hls';
 import useMsg from './hooks/msg';
 import useConfig from './hooks/config';
 import useDanmakuAPI from './hooks/danmaku';
 import useResolution from './hooks/resolution';
 import useFullScreen from './hooks/full-screen';
-import Control from './components/Control';
+import Control from './components/Control.vue';
 import Danmaku from './components/Danmaku.vue';
 import SendDanmaku from './components/SendDanmaku.vue';
 import PlayerMsg from './components/PlayerMsg.vue';
 import ContextMenu from './components/ContextMenu.vue';
-export default {
+import { danmakuType } from './types/danmaku';
+import { onMounted, onBeforeMount, ref, onBeforeUnmount, defineComponent } from 'vue'
+
+export default defineComponent({
     props: {
         vid: {
             type: Number,
@@ -46,7 +48,7 @@ export default {
         },
         resource: {
             type: Object,
-            default: {},
+            requried: true
         },
     },
     setup(props) {
@@ -64,14 +66,14 @@ export default {
         const { getConfig, setConfig } = useConfig();
         const playerConfig = getConfig();
 
-        const videoRef = ref(null);
-        const controlRef = ref(null);
+        const videoRef = ref<HTMLVideoElement | null>(null);
+        const controlRef = ref<any>(null);
         const offestLeft = ref(0);
 
         const initVideo = () => {
-            let duration = videoRef.value.duration;
-            maxRes.value = getMaxRes(props.resource.data);
-            controlRef.value.initControl(duration, maxRes.value, playerRef);
+            let duration = videoRef.value!.duration;
+            maxRes.value = getMaxRes(props.resource!.data);
+            controlRef.value!.initControl(duration, maxRes.value, playerRef);
         }
 
         //视频结束
@@ -100,11 +102,11 @@ export default {
         }
 
         //设置视频状态
-        const setPlayState = (play) => {
+        const setPlayState = (play: boolean) => {
             if (play) {
-                videoRef.value.play();
+                videoRef.value!.play();
             } else {
-                videoRef.value.pause();
+                videoRef.value!.pause();
             }
             if (danmakuRef.value) {
                 danmakuRef.value.startOrPause(play);
@@ -112,46 +114,46 @@ export default {
         }
 
         //设置分辨率
-        const setRes = (res, currentTime, play) => {
+        const setRes = (res: number, currentTime: number, play: boolean) => {
             const resText = !res ? 'original' : 'res' + res;
-            if (props.resource.type === "hls") {
-                loadHls(props.resource.data[resText], videoRef.value);
+            if (props.resource!.type === "hls") {
+                loadHls(props.resource!.data[resText], videoRef.value!);
             } else {
-                videoRef.value.src = props.resource.data[resText];
+                videoRef.value!.src = props.resource!.data[resText];
             }
             //设置播放时间和状态
-            videoRef.value.currentTime = currentTime;
+            videoRef.value!.currentTime = currentTime;
             setPlayState(play);
         }
 
         //设置音量
-        const setVolume = (volume) => {
-            videoRef.value.volume = volume / 100;
+        const setVolume = (volume: number) => {
+            videoRef.value!.volume = volume / 100;
         }
 
         //设置当前进度
-        const setProgress = (currentTime) => {
-            videoRef.value.currentTime = currentTime;
+        const setProgress = (currentTime: number) => {
+            videoRef.value!.currentTime = currentTime;
             if (danmakuRef.value) {
                 danmakuRef.value.clearDanmaku();
             }
         }
 
         //设置倍速
-        const setSpeed = (speed) => {
-            videoRef.value.playbackRate = speed;
+        const setSpeed = (speed: number) => {
+            videoRef.value!.playbackRate = speed;
         }
 
         //弹幕
         const amount = ref(0);
         const danmakuList = ref([]);
-        const danmakuRef = ref(null);
+        const danmakuRef = ref<any>(null);
         const showDanmaku = ref(playerConfig.danmaku);
-        const sendDanmaku = (danmakuForm) => {
+        const sendDanmaku = (danmakuForm: danmakuType) => {
             const tmpForm = {
                 vid: props.vid,
                 part: props.part,
-                time: Math.round(videoRef.value.currentTime),
+                time: Math.round(videoRef.value!.currentTime),
                 text: danmakuForm.text,
                 type: danmakuForm.type,
                 color: `#${danmakuForm.color}`,
@@ -162,12 +164,12 @@ export default {
         }
 
         //设置不透明度
-        const setOpacity = (opacity) => {
+        const setOpacity = (opacity: number) => {
             danmakuRef.value.setOpacity(opacity);
         }
 
         //设置弹幕显示
-        const changeShowDanmaku = (val) => {
+        const changeShowDanmaku = (val: boolean) => {
             if (!val) {
                 danmakuRef.value.clearDanmaku();
             }
@@ -176,12 +178,12 @@ export default {
         }
 
         //右键菜单
-        const menuRef = ref(null);
-        const setPlayVideo = (e) => {
-            if (menuRef.value.menuIsShow()) {
-                menuRef.value.closeMenu();
+        const menuRef = ref<any>(null);
+        const setPlayVideo = (e: MouseEvent) => {
+            if (menuRef.value!.menuIsShow()) {
+                menuRef.value!.closeMenu();
             } else {
-                const target = e.target.id;
+                const target = (e.target as HTMLElement).id;
                 if (target === 'danmaku' || target === 'player') {
                     controlRef.value.playOrPause();
                 }
@@ -189,19 +191,19 @@ export default {
         }
 
         //开启菜单
-        const openMenu = (e) => {
+        const openMenu = (e: MouseEvent) => {
             menuRef.value.openMenu(e, videoRef.value);
         }
 
         //设置镜像
         const setMirror = () => {
-            videoRef.value.classList.toggle("player-mirror");
+            videoRef.value!.classList.toggle("player-mirror");
         }
 
         //快捷键
-        const keyArray = ref([]);
+        const keyArray = ref<Array<string>>([]);
         const keydown = ref("");
-        const handleKeyDown = (e) => {
+        const handleKeyDown = (e: KeyboardEvent) => {
             if (keyArray.value.length > 0) {
                 // a-z的按键 长按去重
                 if (keyArray.value.indexOf(e.key.toLowerCase()) >= 0) {
@@ -213,23 +215,23 @@ export default {
             // 监听按键捕获
             switch (keydown.value) {
                 case " ":
-                    e.returnValue = false;
+                    e.preventDefault();
                     controlRef.value.playOrPause();
                     break;
                 case "arrowright":
-                    e.returnValue = false;
+                    e.preventDefault();
                     controlRef.value.fastForward(true, 10);
                     changeMsg("快进10秒");
                     break;
                 case "arrowleft":
-                    e.returnValue = false;
+                    e.preventDefault();
                     controlRef.value.fastForward(false, 10);
                     changeMsg("快退10秒");
                     break;
             }
         }
 
-        const handleKeyUp = (e) => {
+        const handleKeyUp = (e: KeyboardEvent) => {
             keyArray.value.splice(keyArray.value.indexOf(e.key.toLowerCase()), 1);
             keydown.value = keyArray.value.join("+");
             e.preventDefault();
@@ -238,7 +240,7 @@ export default {
         //显示/隐藏控制栏
         const showControl = ref(true);
         const mouseLeave = () => {
-            if (!videoRef.value.paused) {
+            if (!videoRef.value!.paused) {
                 controlRef.value.showMenu('');
                 showControl.value = false;
             }
@@ -246,7 +248,7 @@ export default {
         const mouseMove = () => {
             if (!showControl.value) {
                 showControl.value = true;
-                if (!videoRef.value.paused) {
+                if (!videoRef.value!.paused) {
                     setTimeout(() => {
                         controlRef.value.showMenu('');
                         showControl.value = false;
@@ -331,7 +333,7 @@ export default {
         SendDanmaku,
         ContextMenu
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -31,27 +31,28 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, nextTick, ref } from 'vue';
+<script lang="ts">
+import { onBeforeMount, defineComponent, nextTick, ref } from 'vue';
 import {
     NIcon, NButton, NInput, NInputGroup,
     NCheckbox, NCheckboxGroup, NScrollbar, useNotification
 } from 'naive-ui';
 import { Close } from '@vicons/ionicons5';
 import { getCollectInfoAPI, collectAPI } from '@/api/collect';
-import useCollection from '@/hooks/collection.js';
-export default {
+import useCollection from '@/hooks/collection';
+export default defineComponent({
     emits: ['close'],
     props: {
         vid: {
-            type: Number
+            type: Number,
+            required: true
         }
     },
     setup(props, ctx) {
         const notification = useNotification();
 
         const loading = ref(true);//加载中
-        const defaultChecked = ref([]);//默认选中
+        const defaultChecked = ref<Array<number>>([]);//默认选中
         const { collections, getCollectionList, createCollection } = useCollection();
 
         const closeCard = () => {
@@ -71,21 +72,21 @@ export default {
         //新建收藏夹
         const name = ref("")
         const isAdd = ref(false);
-        const addInput = ref(null);
+        const addInput = ref<HTMLElement | null>(null);
         const changeAdd = () => {
             isAdd.value = !isAdd.value;
             if (isAdd.value) {
                 //此时input不存在，无法修改焦点
                 nextTick(() => {
-                    addInput.value.focus();
+                    addInput.value!.focus();
                 })
             }
         }
 
         //收藏相关
-        const checkedValue = ref([])
-        const handleUpdateValue = (value) => {
-            checkedValue.value = value;
+        const checkedValue = ref<Array<number>>([])
+        const handleUpdateValue = (value: Array<number | string>) => {
+            checkedValue.value = value as Array<number>;
         }
 
         //新建收藏夹
@@ -112,7 +113,7 @@ export default {
             const cancelList = defaultChecked.value.filter((v) => {
                 return checkedValue.value.indexOf(v) == -1
             })
-            collectAPI(props.vid, addList, cancelList).then((res) => {
+            collectAPI({ vid: props.vid, addList: addList, cancelList: cancelList }).then((res) => {
                 if (res.data.code === 2000) {
                     var count = 0;
                     //否则收藏量不变
@@ -161,7 +162,7 @@ export default {
         NCheckboxGroup,
         Close
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -11,15 +11,20 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { defineComponent, onBeforeMount, ref } from 'vue';
 import { useNotification, NButton } from 'naive-ui';
-import storage from "@/utils/stored-data.js";
+import storage from "@/utils/stored-data";
+import { userInfoType } from '@/types/user';
 
 
-export default {
+export default defineComponent({
     setup() {
-        const userInfo = ref({});
+        const userInfo = ref<userInfoType>({
+            uid: 0,
+            name: "",
+            avatar: ""
+        });
         const notification = useNotification();//通知
 
         const modify = () => {
@@ -30,7 +35,7 @@ export default {
         }
 
         onBeforeMount(() => {
-            userInfo.value = storage.get('userInfo');
+            userInfo.value = storage.get('userInfo') as userInfoType;
         })
 
         return {
@@ -41,7 +46,7 @@ export default {
     components: {
         NButton
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -22,15 +22,15 @@
     </n-form>
 </template>
 
-<script>
-import { ref, onMounted, reactive } from "vue";
-import CoverUpload from "@/components/CoverUpload";
+<script lang="ts">
+import { ref, onMounted, reactive, defineComponent } from "vue";
+import CoverUpload from "@/components/CoverUpload.vue";
 import { uploadVideoInfoAPI, modifyVideoInfoAPI } from '@/api/video';
 import SelectPartition from "./SelectPartition.vue";
 import { NIcon, useNotification } from 'naive-ui';
 import { NForm, NFormItem, NButton, NInput, NSwitch } from 'naive-ui';//表单相关
 
-export default {
+export default defineComponent({
     emits: ["finish"],
     props: {
         info: {
@@ -61,12 +61,12 @@ export default {
 
 
         //封面上传完成
-        const finishUpload = (cover) => {
+        const finishUpload = (cover: string) => {
             videoInfo.cover = cover;
         }
 
         //选中分区
-        const selectedPartition = (value) => {
+        const selectedPartition = (value: number) => {
             videoInfo.partition = value;
         }
 
@@ -130,15 +130,15 @@ export default {
         }
 
         onMounted(() => {
-            if (props.info.vid) {
+            if (props.info!.vid) {
                 isModify.value = true;
                 const video = props.info;
-                videoInfo.vid = video.vid;
-                videoInfo.title = video.title;
-                videoInfo.desc = video.desc;
-                videoInfo.cover = video.cover;
-                videoInfo.copyright = video.copyright;
-                partitionText.value = video.partition;
+                videoInfo.vid = video!.vid;
+                videoInfo.title = video!.title;
+                videoInfo.desc = video!.desc;
+                videoInfo.cover = video!.cover;
+                videoInfo.copyright = video!.copyright;
+                partitionText.value = video!.partition;
             }
             showUpload.value = true;
         })
@@ -165,7 +165,7 @@ export default {
         CoverUpload,
         SelectPartition,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

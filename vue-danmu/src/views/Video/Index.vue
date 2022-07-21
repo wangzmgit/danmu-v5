@@ -4,10 +4,10 @@
         <div class="video-main">
             <div class="content-left">
                 <div v-if="!loading" class="video-player">
-                    <w-player :key="part" :vid="videoInfo.vid" :part="part" :resource="options" />
+                    <w-player :key="part" :vid="videoInfo!.vid" :part="part" :resource="options" />
                     <div class="video-title-box">
-                        <p class="video-title">{{ videoInfo.title }}</p>
-                        <p v-show="videoInfo.copyright" class="copyright">
+                        <p class="video-title">{{ videoInfo!.title }}</p>
+                        <p v-show="videoInfo!.copyright" class="copyright">
                             <n-icon color='#fd6d6f'>
                                 <banSharp />
                             </n-icon>
@@ -17,22 +17,22 @@
                     <!-- 点赞收藏等数据 -->
                     <div class="video-toolbar">
                         <div class="toolbar-left">
-                            <archive-info :stat="stat" :vid="videoInfo.vid"></archive-info>
+                            <archive-info :stat="stat" :vid="videoInfo!.vid"></archive-info>
                         </div>
                         <!-- 日期播放和在线人数 -->
                         <div class="toolbar-right">
                             <span>{{ number }}人在看</span>
-                            <span>{{ videoInfo.clicks }}播放</span>
-                            <span>上传于<n-time :time="new Date(videoInfo.created_at)"></n-time></span>
+                            <span>{{ videoInfo!.clicks }}播放</span>
+                            <span>上传于<n-time :time="new Date(videoInfo!.created_at)"></n-time></span>
                         </div>
                     </div>
                     <!--视频简介-->
                     <div class="desc">
-                        <div :class="['desc-content', more ? 'open' : '']">{{ videoInfo.desc }}</div>
+                        <div :class="['desc-content', more ? 'open' : '']">{{ videoInfo!.desc }}</div>
                         <n-button text @click="more = !more">{{ more ? '收起' : '展开更多' }}</n-button>
                     </div>
                     <!--发表评论-->
-                    <comment :vid="videoInfo.vid"></comment>
+                    <comment :vid="videoInfo!.vid"></comment>
                 </div>
                 <div v-else class="player-skeleton">
                     <n-skeleton height="500px" />
@@ -42,34 +42,35 @@
             </div>
             <div class="content-right">
                 <!--作者信息-->
-                <author-card :loading="loading" :author="videoInfo.author"></author-card>
+                <author-card :loading="loading" :author="videoInfo!.author"></author-card>
                 <!-- 视频分集 -->
                 <div v-if="resources.length > 1">
                     <part-list :resources="resources" :active="part" @change="changePart"></part-list>
                 </div>
                 <!-- 用户视频 -->
-                <author-video v-if="!loading" :uid="videoInfo.author.uid"></author-video>
+                <author-video v-if="!loading" :uid="videoInfo!.author.uid"></author-video>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import config from '@/config.js';
+<script lang="ts">
+import config from '@/config';
 import { useRoute, useRouter } from 'vue-router';
 import { NIcon, NTime, NButton, NSkeleton } from 'naive-ui';
-import { onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
+import { defineComponent, onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
 import { getVideoInfoAPI } from '@/api/video';
 import { BanSharp } from '@vicons/ionicons5';
 import { OnlineSocketURL } from '@/utils/request';
 import Comment from './components/Comment.vue';
-import WPlayer from '@/components/WPlayer/Index';
+import WPlayer from '@/components/WPlayer/Index.vue';
 import PartList from './components/PartList.vue';
 import HeaderBar from '@/components/HeaderBar.vue';
 import AuthorCard from './components/AuthorCard.vue';
 import AuthorVideo from './components/AuthorVideo.vue';
 import ArchiveInfo from './components/ArchiveInfo.vue';
-export default {
+import { videoType } from '@/types/video';
+export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
@@ -83,14 +84,14 @@ export default {
         const stat = ref({});//点赞收藏数据
         const loading = ref(true);
         const resources = ref([]);
-        const videoInfo = ref({});
+        const videoInfo = ref<videoType | null>(null);
 
         //获取视频信息
-        const getVideoInfo = (vid) => {
+        const getVideoInfo = (vid: number) => {
             getVideoInfoAPI(vid).then((res) => {
                 if (res.data.code === 2000) {
                     videoInfo.value = res.data.data.video;
-                    resources.value = videoInfo.value.resources;
+                    resources.value = res.data.data.resources;
                     //设置播放的资源
                     if (!resources.value[part.value - 1]) {
                         part.value = 1;
@@ -99,7 +100,7 @@ export default {
 
                     stat.value = res.data.data.stat;
                     //修改网站标题
-                    document.title = `${videoInfo.value.title}-${title}`
+                    document.title = `${res.data.data.video.title}-${title}`
                     loading.value = false;
                 }
             })
@@ -108,9 +109,9 @@ export default {
         //websocket
         const number = ref(1);//在线人数
         const SocketURL = ref("");
-        const websocket = ref(null);
+        const websocket = ref<WebSocket | null>(null);
         //初始化weosocket
-        const initWebSocket = (vid) => {
+        const initWebSocket = (vid: number) => {
             const wsProtocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
             if (OnlineSocketURL === "/api/v1/video/online/ws") {
                 SocketURL.value = wsProtocol + window.location.host + "/api/v1/video/online/ws";
@@ -125,12 +126,12 @@ export default {
         }
 
         //数据接收
-        const websocketOnmessage = (e) => {
+        const websocketOnmessage = (e: any) => {
             const res = JSON.parse(e.data);
             number.value = res.number;
         }
 
-        const changePart = (target) => {
+        const changePart = (target: number) => {
             if (resources.value[target - 1]) {
                 part.value = target;
             }
@@ -139,8 +140,8 @@ export default {
         }
 
         onBeforeMount(() => {
-            initWebSocket(route.params.vid);
-            getVideoInfo(route.params.vid);
+            initWebSocket(Number(route.params.vid));
+            getVideoInfo(Number(route.params.vid));
             if (route.query.p) {
                 part.value = Number(route.query.p);
             }
@@ -180,7 +181,7 @@ export default {
         AuthorVideo,
         ArchiveInfo
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

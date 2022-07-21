@@ -21,17 +21,17 @@
     </div>
 </template>
 
-<script>
-import { reactive, ref } from 'vue';
+<script lang="ts">
+import { reactive, ref, defineComponent } from 'vue';
 import { registerAPI } from '@/api/user';
 import useSendCode from '@/hooks/send-code';
-import { NForm, NFormItem, NButton, NInput, useNotification } from 'naive-ui';
+import { NForm, FormInst, FormRules, NFormItem, NButton, NInput, useNotification } from 'naive-ui';
 
-export default {
+export default defineComponent({
     emits: ['login'],
     setup(_props, ctx) {
 
-        const formRef = ref(null);
+        const formRef = ref<FormInst | null>(null);
         const notification = useNotification();//通知
 
         const registerForm = reactive({
@@ -40,7 +40,7 @@ export default {
             code: ""
         })
 
-        const rules = {
+        const rules: FormRules = {
             email: [
                 { required: true, message: "请输入邮箱", trigger: ['blur', 'input'] },
                 { type: "email", message: "请输入正确的邮箱地址", trigger: ['blur', 'input'] },
@@ -50,7 +50,7 @@ export default {
         }
 
         const registerClick = () => {
-            formRef.value.validate((errors) => {
+            formRef.value?.validate((errors: any) => {
                 if (!errors) {
                     registerAPI(registerForm).then((res) => {
                         if (res.data.code === 2000) {
@@ -107,7 +107,7 @@ export default {
         NButton,
         NInput,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

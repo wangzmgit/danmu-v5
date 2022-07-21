@@ -64,20 +64,20 @@
     <Login v-if="showLogin" @close="closeCard" />
 </template>
 
-<script>
+<script lang="ts">
 
-import config from '@/config.js';
+import config from '@/config';
 import { storeToRefs } from 'pinia';
-import { computed, ref } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { computed, defineComponent, ref } from 'vue';
 import storage from '@/utils/stored-data';
+import { useRouter, useRoute } from 'vue-router';
 import { useLoginStore } from '@/store/login-store';
 import Login from '@/components/LoginCard/Index.vue';
 import CommonAvatar from './CommonAvatar.vue';
 import { NInput, NIcon, NButton } from 'naive-ui';
 import { Search, CloudUploadOutline, MailOutline, BookmarkOutline } from '@vicons/ionicons5';
 
-export default {
+export default defineComponent({
     setup() {
         const title = config.title;
         const showLogin = ref(false);
@@ -109,7 +109,7 @@ export default {
             return {};
         })
 
-        const goPage = (name) => {
+        const goPage = (name: string) => {
             router.push({ name: name });
         }
 
@@ -147,7 +147,7 @@ export default {
         BookmarkOutline,
         CloudUploadOutline,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

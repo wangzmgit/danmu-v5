@@ -15,7 +15,7 @@
                         <span class="desc">播放：{{ item.clicks }}</span>
                         <span class="desc">简介：{{ item.desc }}</span>
                     </div>
-                    <div class="card-right" v-if="uid === collection.author.uid">
+                    <div class="card-right" v-if="uid === collection!.author.uid">
                         <n-icon class="edit" size="20" @click="removeVideo(item.vid)">
                             <trash-outline />
                         </n-icon>
@@ -30,44 +30,48 @@
             </div>
             <div v-if="loadingInfo" class="content-right">
                 <div class="cover">
-                    <img v-if="collection.cover" :src="collection.cover" alt="收藏夹封面">
+                    <img v-if="collection!.cover" :src="collection!.cover" alt="收藏夹封面">
                     <div class="no-cover" v-else>
                         <img src="@/assets/logo.png" alt="默认封面">
                     </div>
                 </div>
                 <div class="info">
-                    <span class="title">{{ collection.name }}</span>
-                    <span class="desc">简介：{{ collection.desc }}</span>
+                    <span class="title">{{ collection!.name }}</span>
+                    <span class="desc">简介：{{ collection!.desc }}</span>
                     <div class="desc">
-                        <n-time type="date" :time="new Date(collection.created_at)"></n-time>
+                        <n-time type="date" :time="new Date(collection!.created_at)"></n-time>
                         <span>・</span>
-                        <span class="open">{{ collection.open ? '公开' : '私密' }}</span>
-                        <span class="author" @click="goSpace(collection.author.uid)">{{ collection.author.name }}</span>
+                        <span class="open">{{ collection!.open ? '公开' : '私密' }}</span>
+                        <span class="author" @click="goSpace(collection!.author.uid)">{{ collection!.author.name }}</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </template>
-<script>
-import storage from '@/utils/stored-data';
-import { onBeforeMount, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import HeaderBar from '@/components/HeaderBar.vue';
-import { NTime, NIcon, NPagination, NEmpty } from 'naive-ui';
-import { TrashOutline } from "@vicons/ionicons5";
-import { getCollectionInfoAPI, getCollectVideoAPI, collectAPI } from '@/api/collect';
 
-export default {
+<script lang="ts">
+import storage from '@/utils/stored-data';
+import { useRoute, useRouter } from 'vue-router';
+import { TrashOutline } from "@vicons/ionicons5";
+import HeaderBar from '@/components/HeaderBar.vue';
+import { onBeforeMount, ref, defineComponent } from 'vue';
+import { NTime, NIcon, NPagination, NEmpty, useNotification } from 'naive-ui';
+import { getCollectionInfoAPI, getCollectVideoAPI, collectAPI } from '@/api/collect';
+import { videoType } from '@/types/video';
+import { collectionInfoType } from '@/types/collect';
+
+export default defineComponent({
     setup() {
         const id = ref(0);
         const uid = ref(0);//用户ID
         const route = useRoute();
-        const collection = ref({});
+        const collection = ref<collectionInfoType>();
         const loadingInfo = ref(false);
         const loadingContent = ref(false);
+        const notification = useNotification();
 
-        const getCollectionInfo = (id) => {
+        const getCollectionInfo = (id: number) => {
             getCollectionInfoAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     collection.value = res.data.data.collection;
@@ -78,7 +82,7 @@ export default {
 
         const page = ref(1);
         const count = ref(0);
-        const videoList = ref([]);
+        const videoList = ref<Array<videoType>>([]);
         //获取收藏视频内容
         const getCollectVideo = () => {
             getCollectVideoAPI(id.value, page.value, 8).then((res) => {
@@ -88,20 +92,19 @@ export default {
                     if (count.value > 0) {
                         loadingContent.value = true;
                     }
-
                 }
             })
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getCollectVideo();
         }
 
         //移除视频
-        const removeVideo = (vid) => {
-            collectAPI(vid, [], [id.value]).then((res) => {
+        const removeVideo = (vid: number) => {
+            collectAPI({ vid, addList: [], cancelList: [id.value] }).then((res) => {
                 if (res.data.code === 2000) {
                     getCollectVideo();
                 }
@@ -116,12 +119,12 @@ export default {
 
         //页面跳转
         const router = useRouter();
-        const goSpace = (uid) => {
+        const goSpace = (uid: number) => {
             let userUrl = router.resolve({ name: "User", params: { uid: uid } });
             window.open(userUrl.href, '_blank');
         }
 
-        const goVideo = (vid) => {
+        const goVideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
@@ -157,7 +160,7 @@ export default {
         HeaderBar,
         TrashOutline
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

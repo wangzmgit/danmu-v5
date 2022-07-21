@@ -8,19 +8,19 @@
     </n-result>
 </template>
 
-<script>
+<script lang="ts">
 import { NResult } from 'naive-ui';
-import { onBeforeMount } from 'vue';
+import { defineComponent, onBeforeMount } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getUidByNameAPI } from '@/api/user';
-export default {
+export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
 
         onBeforeMount(() => {
             if (route.params.name) {
-                getUidByNameAPI(route.params.name).then((res) => {
+                getUidByNameAPI(route.params.name.toString()).then((res) => {
                     if (res.data.code === 2000) {
                         const uid = res.data.data.uid;
                         if (uid) router.push({ name: 'User', params: { uid: uid} });        
@@ -32,7 +32,7 @@ export default {
     components: {
         NResult
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

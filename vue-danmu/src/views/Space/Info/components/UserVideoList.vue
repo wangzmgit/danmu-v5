@@ -52,20 +52,21 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from 'vue-router';
-import { ref, onBeforeMount } from 'vue';
+import { myUploadVideoType } from '@/types/video';
+import { ref, onBeforeMount, defineComponent } from 'vue';
 import { getMyVideoAPI, deleteVideoAPI } from '@/api/video';
 import { NButton, NIcon, NPagination, useNotification } from 'naive-ui';
 import { CreateOutline, InformationCircleOutline, TrashOutline } from "@vicons/ionicons5"
-export default {
+export default defineComponent({
     emits: ['setCount'],
     setup(_props, ctx) {
         const pageSize = 8;
         const page = ref(1);
         const count = ref(0);
 
-        const videoList = ref([]);
+        const videoList = ref<Array<myUploadVideoType>>([]);
         const router = useRouter();
         const notification = useNotification();//通知
 
@@ -87,12 +88,12 @@ export default {
         }
 
         //删除视频
-        const deleteVideo = (id) => {
+        const deleteVideo = (id: number) => {
             deleteVideoAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getMyVideo();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '删除失败',
                     duration: 5000,
@@ -101,8 +102,8 @@ export default {
         }
 
         //修改菜单
-        const modifyMenu = ref([]);
-        const showMenu = (index, show) => {
+        const modifyMenu = ref<Array<boolean>>([]);
+        const showMenu = (index: number, show: boolean) => {
             if (modifyMenu.value[index] && !show) {
                 modifyMenu.value[index] = false;
                 return;
@@ -114,22 +115,22 @@ export default {
         }
 
         //查看状态
-        const viewStatus = (vid) => {
+        const viewStatus = (vid: number) => {
             router.push({ name: "UploadVideoHome", params: { vid: vid } });
         }
 
-        const modifyVideo = (vid, status) => {
+        const modifyVideo = (vid: number, status: string) => {
             router.push({ name: "UploadVideoHome", params: { vid: vid }, query: { modify: status } });
         }
 
-        const goVideo = (review, vid) => {
+        const goVideo = (review: number, vid: number) => {
             if (review === 2000) {
                 router.push({ name: "Video", params: { vid: vid } });
             }
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getMyVideo();
         }
@@ -160,7 +161,7 @@ export default {
         TrashOutline,
         InformationCircleOutline
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

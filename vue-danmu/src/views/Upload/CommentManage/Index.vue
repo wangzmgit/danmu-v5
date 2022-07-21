@@ -33,37 +33,37 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { getMyVideoAPI } from '@/api/video';
 import useMention from '@/hooks/mention';
 import { useRouter } from 'vue-router';
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, defineComponent } from "vue";
 import useComment from '@/hooks/comment';
 import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NButton, NTime, NPagination, NSelect } from "naive-ui";
 
-export default {
+export default defineComponent({
     setup() {
         const page = ref(1);
         const currentVid = ref(0);
         const { total, commentList, deleteCommentSync, getManageCommentList } = useComment();
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getManageCommentList(currentVid.value, page.value, 6);
         }
 
         //页面跳转
         const router = useRouter();
-        const goUserSpace = (uid) => {
+        const goUserSpace = (uid: number) => {
             let userUrl = router.resolve({ name: "User", params: { uid: uid } });
             window.open(userUrl.href, '_blank');
         }
 
 
         //删除评论回复
-        const deleteClick = (id, index) => {
+        const deleteClick = (id: number, index: number) => {
             deleteCommentSync(id).then((res) => {
                 if (res) {
                     commentList.value.splice(index, 1);
@@ -73,7 +73,7 @@ export default {
 
         const { handleMention } = useMention();
         //前往@的用户
-        const goMention = (name) => {
+        const goMention = (name: string | null) => {
             let userUrl = router.resolve({ name: 'MentionUser', params: { name: name } });
             window.open(userUrl.href, '_blank');
         }
@@ -96,7 +96,7 @@ export default {
             })
         }
 
-        const changeVideo = (vid) => {
+        const changeVideo = (vid: number) => {
             currentVid.value = vid;
             pageChange(1);
         }
@@ -128,7 +128,7 @@ export default {
         NPagination,
         CommonAvatar,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -10,9 +10,9 @@
     </div>
 </template>
 
-<script>
-import { ref } from 'vue';
-export default {
+<script lang="ts">
+import { ref,defineComponent } from 'vue';
+export default defineComponent({
     setup(_props, ctx) {
         const showMask = ref(false);
 
@@ -36,7 +36,7 @@ export default {
         }
     },
 
-}
+});
 </script>
 
 <style>

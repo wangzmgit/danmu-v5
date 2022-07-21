@@ -26,15 +26,15 @@
     </div>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script lang="ts">
+import { ref, defineComponent } from 'vue';
 import { NIcon } from 'naive-ui';
 import { Close } from '@vicons/ionicons5';
-import Login from './components/Login'
-import Register from './components/Register'
+import Login from './components/Login.vue';
+import Register from './components/Register.vue';
 
 
-export default {
+export default defineComponent({
     setup(_props, ctx) {
 
         const showLogin = ref(true);
@@ -43,7 +43,7 @@ export default {
             ctx.emit('close');
         }
 
-        const setCard = (val) => {
+        const setCard = (val: boolean) => {
             showLogin.value = val;
         }
 
@@ -59,7 +59,7 @@ export default {
         NIcon,
         Close
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -44,12 +44,13 @@
     </n-form>
 </template>
 
-<script>
+<script lang="ts">
 import config from "@/config";
 import { Person } from '@vicons/ionicons5';
-import storage from "@/utils/stored-data.js";
-import { timestampToTime } from '@/utils/time.js';
-import { ref, reactive, onBeforeMount } from "vue";
+import storage from "@/utils/stored-data";
+import { modifyInfoType } from '@/types/user';
+import { timestampToTime } from '@/utils/time';
+import { ref, reactive, onBeforeMount, defineComponent } from "vue";
 import {
     NForm, NIcon, NFormItem, NButton, NUpload, NAvatar,
     NRadioGroup, NRadioButton, NInput, NDatePicker, useNotification
@@ -57,7 +58,7 @@ import {
 import { AvatarUrl as avatarUrl } from '@/utils/request';
 import { modifyUserInfoAPI, getUserInfoAPI } from "@/api/user";
 
-export default {
+export default defineComponent({
 
     props: {
         info: {
@@ -83,14 +84,14 @@ export default {
             name: "",
             sign: "",
             gender: "",
-            birthday: null,
+            birthday: 0,
         })
 
         const notification = useNotification();//通知
 
 
         //上传之前的回调
-        const beforeUploadAvatar = (options) => {
+        const beforeUploadAvatar = (options: any) => {
             const file = options.file;
             const isJpgOrPng =
                 file.type === "image/jpeg" || file.type === "image/png";
@@ -113,7 +114,7 @@ export default {
         }
 
         //上传变化的回调
-        const handleChange = (options) => {
+        const handleChange = (options: any) => {
             const status = options.file.status;
             if (status === "finished") {
                 const res = JSON.parse(options.event.currentTarget.response);
@@ -132,11 +133,11 @@ export default {
         }
 
         const modifyUserInfo = () => {
-            const modifyForm = {
+            const modifyForm: modifyInfoType = {
                 name: userInfo.name,
                 sign: userInfo.sign,
                 gender: Number(userInfo.gender),
-                birthday: timestampToTime(userInfo.birthday, 'Y-M-D'),
+                birthday: timestampToTime(userInfo.birthday!, 'Y-M-D'),
             }
             if (!userInfo.name) {
                 notification.error({
@@ -206,7 +207,7 @@ export default {
         NRadioButton,
         Person
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

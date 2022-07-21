@@ -19,7 +19,7 @@
         <div class="video-author-box">
             <!--头像-->
             <div class="author-avatar">
-                <n-avatar v-if="author.avatar" round :size="50" :src="author.avatar" />
+                <n-avatar v-if="author!.avatar" round :size="50" :src="author!.avatar" />
                 <n-avatar v-else round :size="50">
                     <n-icon size="26">
                         <Person />
@@ -28,19 +28,19 @@
             </div>
             <!--昵称和个签-->
             <div class="author-info">
-                <p @click="goUserSpace(author.uid)">{{ author.name }}</p>
-                <p>{{ author.sign }}</p>
+                <p @click="goUserSpace(author!.uid)">{{ author!.name }}</p>
+                <p>{{ author!.sign }}</p>
             </div>
             <div class="follow-btn">
-                <n-button size="small" v-if="isFollow" type="primary" @click="unfollow(author.uid)">已关注</n-button>
-                <n-button size="small" v-else :disabled="!login" type="error" @click="follow(author.uid)">关注</n-button>
+                <n-button size="small" v-if="isFollow" type="primary" @click="unfollow(author!.uid)">已关注</n-button>
+                <n-button size="small" v-else :disabled="!login" type="error" @click="follow(author!.uid)">关注</n-button>
             </div>
         </div>
     </div>
 </template>
 
-<script>
-import { watch } from 'vue';
+<script lang="ts">
+import { defineComponent, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Person } from '@vicons/ionicons5';
 import { useRouter } from 'vue-router';
@@ -48,7 +48,7 @@ import useUserFollow from '@/hooks/user-follow';
 import { useLoginStore } from '@/store/login-store';
 import { NIcon, NButton, NAvatar, NSkeleton } from 'naive-ui';
 
-export default {
+export default defineComponent({
     props: {
         author: {
             type: Object
@@ -62,7 +62,7 @@ export default {
         const loginStore = useLoginStore();
         const { login } = storeToRefs(loginStore);
 
-        const goUserSpace = (uid) => {
+        const goUserSpace = (uid:number) => {
             let userUrl = router.resolve({ name: "User", params: { uid: uid } });
             window.open(userUrl.href, '_blank');
         }
@@ -70,7 +70,7 @@ export default {
         const { isFollow, getFollowStatus, follow, unfollow } = useUserFollow();
         watch(() => props.loading, (newValue, _oldValue) => {
             if (!newValue) {
-                getFollowStatus(props.author.uid)
+                getFollowStatus(props.author!.uid)
             }
         })
 
@@ -89,7 +89,7 @@ export default {
         NSkeleton,
         Person
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

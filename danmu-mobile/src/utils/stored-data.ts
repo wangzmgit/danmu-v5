@@ -19,7 +19,7 @@ const storage = {
         }
         localStorage.setItem(source.key, source.value);
     },
-    get(key: string): object | null {
+    get(key: string): any {
         const now = Date.now();
         const source: storageType = {
             key: key,

@@ -66,9 +66,10 @@ export default defineComponent({
     props: {
         vid: {
             type: Number,
+            required: true
         }
     },
-    setup(props: any) {
+    setup(props) {
 
         //获取评论回复
         const page = ref(1);

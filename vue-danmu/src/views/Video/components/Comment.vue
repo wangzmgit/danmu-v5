@@ -27,7 +27,7 @@
                 <span>{{ item.content }}</span>
             </div>
             <div class="content-text" v-else v-for="content in handleMention(item.content)">
-                <span :class="content.class" @click="goMention(content.key)">{{ content.value }}</span>
+                <span :class="content.class" @click="goMention(content.key!)">{{ content.value }}</span>
             </div>
         </div>
         <!--动态回复框-->
@@ -64,7 +64,7 @@
                         <span>{{ reply.content }}</span>
                     </div>
                     <div class="content-text" v-else v-for="content in handleMention(reply.content)">
-                        <span :class="content.class" @click="goMention(content.key)">{{ content.value }}</span>
+                        <span :class="content.class" @click="goMention(content.key!)">{{ content.value }}</span>
                     </div>
                 </div>
             </div>
@@ -79,20 +79,23 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import useMention from '@/hooks/mention';
 import { useRouter } from 'vue-router';
-import { onBeforeMount, reactive, ref, computed } from "vue";
+import { onBeforeMount, reactive, ref, computed, defineComponent } from "vue";
 import storage from "@/utils/stored-data";
 import { addCommentAPI } from '@/api/comment';
 import useComment from '@/hooks/comment';
 import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NButton, NInput, NIcon, NTime, useNotification } from "naive-ui";
+import { postCommentType } from '@/types/comment';
+import { userInfoType } from '@/types/user';
 
-export default {
+export default defineComponent({
     props: {
         vid: {
             type: Number,
+            required: true
         }
     },
     setup(props) {
@@ -102,7 +105,7 @@ export default {
             minRows: 3,
             maxRows: 3
         }
-        const commentForm = reactive({
+        const commentForm = reactive<postCommentType>({
             vid: props.vid,
             content: "",
             parentId: 0,
@@ -129,7 +132,7 @@ export default {
 
         //评论回复
         const replyCount = 2;//获取评论时查询的回复数
-        const { noMore,commentList, getCommentList, getReplyListSync, deleteCommentSync } = useComment();
+        const { noMore, commentList, getCommentList, getReplyListSync, deleteCommentSync } = useComment();
         const addComment = () => {
             addCommentAPI(commentForm).then((res) => {
                 if (res.data.code === 2000) {
@@ -149,7 +152,7 @@ export default {
         }
 
         //提交回复
-        const submitReply = (cid) => {
+        const submitReply = (cid: number) => {
             replyForm.parentId = cid;
             if (replyForm.replyUser) {
                 replyForm.content = `回复 @${replyForm.replyUser} :${replyForm.content}`;
@@ -175,14 +178,14 @@ export default {
 
         //页面跳转
         const router = useRouter();
-        const goUserSpace = (uid) => {
+        const goUserSpace = (uid: number) => {
             let userUrl = router.resolve({ name: "User", params: { uid: uid } });
             window.open(userUrl.href, '_blank');
         }
 
         //显示隐藏动态回复
-        const showReplyFlag = ref([]);
-        const showReply = (index, user) => {
+        const showReplyFlag = ref<Array<boolean>>([]);
+        const showReply = (index: number, name: string) => {
             if (showReplyFlag.value[index]) {
                 showReplyFlag.value[index] = false;
                 return;
@@ -190,9 +193,9 @@ export default {
             for (let i = 0; i < commentList.value.length; i++) {
                 showReplyFlag.value[i] = false;
             }
-            if (user) {
-                replyTip.value = `回复 @${user}: `;
-                replyForm.replyUser = user;
+            if (name) {
+                replyTip.value = `回复 @${name}: `;
+                replyForm.replyUser = name;
             }
             showReplyFlag.value[index] = true;
         }
@@ -200,7 +203,7 @@ export default {
         //获取评论回复
         const page = ref(1);
         //加载更多回复
-        const getMoreReply = (cid, index) => {
+        const getMoreReply = (cid: number, index: number) => {
             const pageSize = 2;
             if (!commentList.value[index].page) {
                 commentList.value[index].page = 1;
@@ -213,7 +216,7 @@ export default {
                 }
 
                 commentList.value[index].page += 1;
-                commentList.value[index].reply.push(...res);
+                (commentList.value[index].reply)?.push(...res);
             })
         }
 
@@ -225,11 +228,11 @@ export default {
 
 
         //删除评论回复
-        const deleteClick = (id, index, replyIndex = null) => {
+        const deleteClick = (id: number, index: number, replyIndex: number | null = null) => {
             deleteCommentSync(id).then((res) => {
                 if (res) {
                     if (replyIndex !== null) {
-                        commentList.value[index].reply.splice(replyIndex, 1);
+                        (commentList.value[index].reply)?.splice(replyIndex, 1);
                     } else {
                         commentList.value.splice(index, 1);
                     }
@@ -241,7 +244,7 @@ export default {
         const { handleMention } = useMention();
 
         //前往@的用户
-        const goMention = (name) => {
+        const goMention = (name: string) => {
             let userUrl = router.resolve({ name: 'MentionUser', params: { name: name } });
             window.open(userUrl.href, '_blank');
         }
@@ -277,7 +280,7 @@ export default {
         NButton,
         CommonAvatar,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

@@ -40,19 +40,21 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { baseVideoType } from '@/types/video';
+import { partitionType } from '@/types/partition';
 import { getVideoListAPI } from "@/api/video";
 import { getPartitionAPI } from "@/api/partition";
 import { useRoute, useRouter } from "vue-router";
-import { reactive, ref, toRefs, onBeforeMount } from "vue";
+import { reactive, ref, toRefs, onBeforeMount, defineComponent } from "vue";
 import HeaderBar from "@/components/HeaderBar.vue";
 import { NAffix, NButton, useNotification } from "naive-ui";
 
-export default {
+export default defineComponent({
     setup() {
         const partitionInfo = reactive({
-            partitions: [], //分区内容
-            subpartition: [], //子分区内容
+            partitions: [] as partitionType[], //分区内容
+            subpartition: [] as partitionType[], //子分区内容
             selectedPartition: 0,//选中分区
             selectedSubpartition: 0,//选中子分区
         });
@@ -61,7 +63,7 @@ export default {
         const notification = useNotification();
 
         //获取分区列表
-        const getPartitionList = (fid) => {
+        const getPartitionList = (fid: number) => {
             getPartitionAPI(fid).then((res) => {
                 if (res.data.code === 2000) {
                     if (fid === 0) {
@@ -70,7 +72,7 @@ export default {
                         partitionInfo.subpartition = res.data.data.partitions;
                     }
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: "分区加载失败",
                     duration: 5000
@@ -79,7 +81,7 @@ export default {
         }
 
         //设置分区
-        const selectPartition = (id) => {
+        const selectPartition = (id: number) => {
             if (partitionInfo.selectedPartition === id) return;
             let newQuery = JSON.parse(JSON.stringify(route.query));
             newQuery.partition = id;
@@ -95,7 +97,7 @@ export default {
         }
 
         //设置子分区
-        const selectSubartition = (id) => {
+        const selectSubartition = (id: number) => {
             if (partitionInfo.selectedSubpartition === id) return;
             let newQuery = JSON.parse(JSON.stringify(route.query));
             newQuery.subpartition = id;
@@ -106,7 +108,7 @@ export default {
         }
 
         const page = ref(1);
-        const videoList = ref([]);
+        const videoList = ref<Array<baseVideoType>>([]);
         const noMore = ref(false);
         const getVideoList = (init = false) => {
             if (init) {
@@ -136,7 +138,7 @@ export default {
         }
 
         //前往视频详情
-        const govideo = (vid) => {
+        const govideo = (vid: number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
@@ -167,7 +169,7 @@ export default {
         NButton,
         HeaderBar,
     },
-};
+});
 </script>
 
 <style lang="less" scoped>

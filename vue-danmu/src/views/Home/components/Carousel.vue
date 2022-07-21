@@ -6,14 +6,15 @@
     </n-carousel>
 </template>
 
-<script>
+<script lang="ts">
 import { NCarousel } from 'naive-ui';
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, defineComponent } from 'vue';
 import { getCarouselAPI } from '@/api/carousel';
+import { carouselType } from '@/types/carousel';
 
-export default {
+export default defineComponent({
     setup() {
-        const carousels = ref([]);
+        const carousels = ref<Array<carouselType>>([]);
 
         const getCarousel = () => {
             getCarouselAPI().then((res) => {
@@ -34,7 +35,7 @@ export default {
     components: {
         NCarousel
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

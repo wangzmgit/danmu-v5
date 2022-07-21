@@ -7,10 +7,10 @@
   </div>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script lang="ts">
+import { ref, defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
   emits: ['change'],
   props: {
     value: {
@@ -30,7 +30,7 @@ export default {
       openSwitch
     };
   }
-};
+});
 </script>
 
 <style lang="less" scoped>

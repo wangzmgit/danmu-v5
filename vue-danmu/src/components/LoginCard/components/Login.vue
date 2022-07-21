@@ -17,19 +17,19 @@
     </n-form>
 </template>
 
-<script>
-import { reactive, ref } from 'vue';
+<script lang="ts">
+import { defineComponent, reactive, ref } from 'vue';
 import { loginAPI } from '@/api/user';
 import storage from '@/utils/stored-data';
 import { useLoginStore } from '@/store/login-store';
-import { NForm, NFormItem, NButton, NInput, useNotification } from 'naive-ui';
+import { NForm, FormInst, FormRules, NFormItem, NButton, NInput, useNotification } from 'naive-ui';
 
 
-export default {
-    emits: ['register','close'],
+export default defineComponent({
+    emits: ['register', 'close'],
     setup(_props, ctx) {
 
-        const formRef = ref(null);
+        const formRef = ref<FormInst | null>(null);
         const store = useLoginStore();
         const notification = useNotification();//通知
 
@@ -38,7 +38,7 @@ export default {
             password: "",
         })
 
-        const rules = {
+        const rules: FormRules = {
             email: [
                 { required: true, message: "请输入邮箱", trigger: ['blur', 'input'] },
                 { type: "email", message: "请输入正确的邮箱地址", trigger: ['blur', 'input'] },
@@ -47,7 +47,7 @@ export default {
         }
 
         const loginClick = () => {
-            formRef.value.validate((errors) => {
+            formRef.value?.validate((errors: any) => {
                 if (!errors) {
                     loginAPI(loginForm).then((res) => {
                         if (res.data.code === 2000) {
@@ -90,7 +90,7 @@ export default {
         NButton,
         NInput,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

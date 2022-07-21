@@ -1,7 +1,7 @@
 <template>
     <div class="part-head">
         <span class="title">分段列表</span>
-        <span class="part">({{ current }}/{{ resources.length }})</span>
+        <span class="part">({{ current }}/{{ resources?.length }})</span>
     </div>
     <n-scrollbar style="max-height: 300px;margin-bottom: 20px;">
         <div :class="['video-item', current - 1 === index ? 'active-part' : '']" v-for="(item, index) in resources"
@@ -16,15 +16,16 @@
     </n-scrollbar>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import { ref, defineComponent } from "vue";
 import { NScrollbar, NEllipsis } from "naive-ui";
+import { partListType } from "@/types/video";
 
-export default {
+export default defineComponent({
     emits: ['change'],
     props: {
         resources: {
-            type: Object
+            type: Array as () => Array<partListType>
         },
         active: {
             type: Number,
@@ -33,15 +34,15 @@ export default {
     },
     setup(props, ctx) {
         const current = ref(props.active);
-        const toDuration = (duration) => {
-            let m = parseInt(duration / 60);
-            let s = parseInt(duration % 60);
-            m = m < 10 ? "0" + m : m;
-            s = s < 10 ? "0" + s : s;
-            return m + ":" + s;
+        const toDuration = (duration: number) => {
+            let m: number = Math.floor(duration / 60);
+            let s: number = Math.floor(duration % 60);
+            const mm = m < 10 ? "0" + m : m;
+            const ss = s < 10 ? "0" + s : s;
+            return mm + ":" + ss;
         }
 
-        const changePart = (part) => {
+        const changePart = (part: number) => {
             current.value = part + 1;
             ctx.emit('change', part + 1)
         }
@@ -56,7 +57,7 @@ export default {
         NScrollbar,
         NEllipsis
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

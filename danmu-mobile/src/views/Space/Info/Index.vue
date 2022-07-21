@@ -58,8 +58,8 @@ export default defineComponent({
         const router = useRouter();
         const message = useMessage();
 
-        const userInfo = computed((): userInfoType => {
-            return storage.get("userInfo") as userInfoType;
+        const userInfo = computed(() => {
+            return storage.get("userInfo");
         })
 
         //前往关注和粉丝页面

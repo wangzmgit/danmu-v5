@@ -26,16 +26,17 @@
     </footer>
 </template>
 
-<script>
+<script lang="ts">
 import config from '@/config'
-export default {
+import { defineComponent } from 'vue'
+export default defineComponent({
     name: 'FooterBar',
     setup() {
         return {
             config
         }
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

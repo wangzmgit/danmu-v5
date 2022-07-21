@@ -20,8 +20,8 @@
     <login v-if="showLogin" @close="closeLoginCard"></login>
 </template>
 
-<script>
-import { watch, ref } from 'vue';
+<script lang="ts">
+import { watch, ref, defineComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { NButton } from 'naive-ui';
 import Carousel from './components/Carousel.vue';
@@ -31,14 +31,14 @@ import Login from '@/components/LoginCard/Index.vue';
 import VideoList from './components/VideoList.vue';
 import FooterBar from '@/components/FooterBar.vue';
 
-export default {
+export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
         const showLogin = ref(false);
         const closeLoginCard = () => {
             showLogin.value = false;
-            router.push({ name: 'Home', params: { login: false } });
+            router.push({ name: 'Home', params: { login: "false" } });
         }
 
         const viewMore = () => {
@@ -69,7 +69,7 @@ export default {
         VideoList,
         FooterBar
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

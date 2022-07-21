@@ -23,20 +23,21 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { searchVideoAPI } from "@/api/search";
 import HeaderBar from "@/components/HeaderBar.vue";
-import { onBeforeMount, ref } from "vue";
+import { defineComponent, onBeforeMount, ref } from "vue";
 import { NInput, NIcon, useNotification } from "naive-ui";
 import { useRoute, useRouter } from "vue-router";
 import { Search } from '@vicons/ionicons5';
+import { baseVideoType } from "@/types/video";
 
-export default {
+export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
         const keywords = ref("");
-        const videoList = ref([]);
+        const videoList = ref<Array<baseVideoType>>([]);
         const notification = useNotification();
 
         const searchVideo = () => {
@@ -53,11 +54,11 @@ export default {
         }
 
         //关键词高亮
-        const keyHighlight = (title) => {
+        const keyHighlight = (title:string) => {
             let res = '';
-            let indexArr = []; // 需要标红的字的下标数组
+            let indexArr:Array<number> = []; // 需要标红的字的下标数组
             const keywordsArray = keywords.value.split(" ");
-            const getReplaceStr = (str) => `<font color="#409EFF">${str}</font>`;
+            const getReplaceStr = (str:string) => `<font color="#409EFF">${str}</font>`;
             keywordsArray.forEach((keyword) => {
                 let filterStr = title;
                 let stopFlag = false;
@@ -82,13 +83,13 @@ export default {
             return res;
         }
 
-        const govideo = (vid) => {
+        const govideo = (vid:number) => {
             let videoUrl = router.resolve({ name: "Video", params: { vid: vid } });
             window.open(videoUrl.href, '_blank');
         }
 
         onBeforeMount(() => {
-            keywords.value = route.params.keywords;
+            keywords.value = route.params.keywords.toString();
             searchVideo();
         })
 
@@ -106,7 +107,7 @@ export default {
         Search,
         HeaderBar,
     },
-};
+});
 </script>
 
 <style lang="less" scoped>

@@ -2,12 +2,12 @@
     <follow-list :following="following" :height="400" :uid="uid"></follow-list>
 </template>
 
-<script>
+<script lang="ts">
 import { useRoute } from "vue-router";
-import { ref, onBeforeMount } from "vue";
-import FollowList from "@/components/FollowList";
+import { ref, onBeforeMount, defineComponent } from "vue";
+import FollowList from "@/components/FollowList.vue";
 
-export default {
+export default defineComponent({
     setup() {
         const uid = ref(0);
         const following = ref(true);
@@ -29,5 +29,5 @@ export default {
     components: {
         FollowList,
     },
-};
+});
 </script>

@@ -23,15 +23,15 @@
     </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
 import config from "@/config";
-import storage from "@/utils/stored-data.js";
+import storage from "@/utils/stored-data";
 import { CoverUrl as coverUrl } from "@/utils/request";
 import { ArchiveOutline as ArchiveIcon } from "@vicons/ionicons5";
 import { NIcon, NUpload, NUploadDragger, NText, NP, NProgress, useNotification } from 'naive-ui';
 
-export default {
+export default defineComponent({
     props: {
         cover: {
             type: String
@@ -49,7 +49,7 @@ export default {
         const notification = useNotification();//通知
 
         //上传之前的回调
-        const beforeUploadCover = (options) => {
+        const beforeUploadCover = async (options: any) => {
             const file = options.file;
             const isJpgOrPng =
                 file.type === "image/jpeg" || file.type === "image/png";
@@ -72,7 +72,7 @@ export default {
         }
 
         //上传变化的回调
-        const handleChange = (options) => {
+        const handleChange = (options: any) => {
             uploading.value = true;
             const status = options.file.status;
             if (status === "finished") {
@@ -118,7 +118,7 @@ export default {
         //图标
         ArchiveIcon
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

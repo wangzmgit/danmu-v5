@@ -28,15 +28,16 @@
 
 </template>
 
-<script>
-import { onBeforeMount, reactive, nextTick, ref } from "vue";
+<script lang="ts">
+import { onBeforeMount, reactive, nextTick, ref, defineComponent } from "vue";
 import { submitReviewAPI } from '@/api/review';
 import { deleteResourceAPI, modifyTitleAPI, getResourceListAPI } from "@/api/video";
 import VideoUpload from "./VideoUpload.vue";
 import { NScrollbar, NInput, NInputGroup, NButton, NIcon, NTag, useNotification } from "naive-ui";
 import { Videocam } from "@vicons/ionicons5";
+import { baseResourceType, reviewResourceType } from "@/types/resource";
 
-export default {
+export default defineComponent({
     props: {
         vid: {
             type: Number
@@ -44,10 +45,10 @@ export default {
     },
     setup(props) {
         const vid = props.vid;
-        const uploadVideoList = ref([]);
+        const uploadVideoList = ref<Array<reviewResourceType>>([]);
         const notification = useNotification();//通知
 
-        const toTagType = (state) => {
+        const toTagType = (state: number) => {
             switch (state) {
                 case 2000:
                     return "success";
@@ -58,7 +59,7 @@ export default {
             }
         }
 
-        const toTagText = (state) => {
+        const toTagText = (state: number) => {
             switch (state) {
                 case 200:
                     return "视频处理中";
@@ -82,7 +83,7 @@ export default {
         }
 
         const getResourceList = () => {
-            getResourceListAPI(vid).then((res) => {
+            getResourceListAPI(vid!).then((res) => {
                 if (res.data.code === 2000) {
                     uploadVideoList.value = res.data.data.resources;
                 }
@@ -96,7 +97,7 @@ export default {
         }
 
         const submitReview = () => {
-            submitReviewAPI(vid).then((res) => {
+            submitReviewAPI(vid!).then((res) => {
                 if (res.data.code === 2000) {
                     notification.success({
                         title: '提交成功',
@@ -112,7 +113,7 @@ export default {
             });
         }
 
-        const deleteResource = (id, index) => {
+        const deleteResource = (id: number, index: number) => {
             deleteResourceAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     uploadVideoList.value.splice(index, 1);
@@ -126,14 +127,14 @@ export default {
         }
 
         //修改资源名
-        const titleInput = ref(null);
-        const modifyForm = reactive({
+        const titleInput = ref<Array<HTMLElement>>([]);
+        const modifyForm = reactive<baseResourceType>({
             id: 0,
             title: '',
         });
 
         //点击标题
-        const titleClick = (resource, index) => {
+        const titleClick = (resource: reviewResourceType, index: number) => {
             modifyForm.id = resource.id;
             modifyForm.title = resource.title;
             resource.modify = true;
@@ -143,7 +144,7 @@ export default {
         }
 
         //修改标题
-        const modifyTitle = (resource) => {
+        const modifyTitle = (resource: reviewResourceType) => {
             modifyTitleAPI(modifyForm).then((res) => {
                 if (res.data.code === 2000) {
                     resource.title = modifyForm.title;
@@ -152,7 +153,7 @@ export default {
                         duration: 5000,
                     })
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '修改失败',
                     duration: 5000,
@@ -188,7 +189,7 @@ export default {
         NScrollbar,
         Videocam
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

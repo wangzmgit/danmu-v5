@@ -11,17 +11,18 @@
 </template>
 
 
-<script>
-import { h, computed, ref, onBeforeMount } from "vue";
+<script lang="ts">
+import { h, computed, ref, onBeforeMount, defineComponent } from "vue";
 import { NIcon, NMenu } from "naive-ui";
 import { RouterLink, useRoute } from 'vue-router';
-import storage from "@/utils/stored-data.js";
+import storage from "@/utils/stored-data";
 import HeaderBar from '@/components/HeaderBar.vue';
 import {
     ChatbubbleOutline, VideocamOutline, SettingsOutline,
     BookmarkOutline, CloudUploadOutline, MailOutline
 } from "@vicons/ionicons5";
-export default {
+import { userInfoType } from "@/types/user";
+export default defineComponent({
     setup() {
         const route = useRoute();
         const defaultOption = ref('');//默认激活菜单
@@ -112,7 +113,7 @@ export default {
             },
         ];
 
-        function renderIcon(icon, color) {
+        function renderIcon(icon: any, color: string) {
             return () => h(NIcon, { color: color }, { default: () => h(icon) });
         }
 
@@ -154,7 +155,7 @@ export default {
         NMenu,
         HeaderBar,
     },
-};
+});
 </script>
 
 <style lang="less" scoped>

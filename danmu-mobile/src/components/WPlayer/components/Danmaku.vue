@@ -3,16 +3,16 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, defineComponent } from "vue";
 import { danmakuItemType, drawDanmakuType } from "../types/danmaku";
 
-export default {
+export default defineComponent({
   props: {
     list: {
-      type: Array
+      type: Array<danmakuItemType>
     }
   },
-  setup(props: any) {
+  setup(props) {
     const danmakuRef = ref<HTMLElement | null>(null);
     const paused = ref(false);//是否暂停
     const danmaku = ref<HTMLElement[]>([]);//当前弹幕
@@ -198,7 +198,7 @@ export default {
       setOpacity
     }
   }
-};
+});
 </script>
 
 <style>

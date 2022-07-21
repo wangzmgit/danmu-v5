@@ -17,14 +17,15 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { useRouter } from "vue-router";
-import { onBeforeMount, ref, reactive, onBeforeUnmount } from "vue";
+import { followUserType } from '@/types/follow';
+import { onBeforeMount, ref, reactive, onBeforeUnmount, defineComponent } from "vue";
 import { Person } from '@vicons/ionicons5';
 import { getFollowingAPI, getFollowersAPI } from '@/api/follow';
 import { NAvatar, NIcon, NScrollbar, useNotification } from "naive-ui";
 
-export default {
+export default defineComponent({
     props: {
         uid: {
             type: Number,
@@ -46,12 +47,12 @@ export default {
         });
         const noMore = ref(false);//没有更多
         const loading = ref(false);//加载中
-        const followList = ref([]);
+        const followList = ref<Array<followUserType>>([]);
         const router = useRouter();
         const notification = useNotification();//通知
 
         //进入用户空间
-        const goUserSpace = (uid) => {
+        const goUserSpace = (uid: number) => {
             let userUrl = router.resolve({ name: "User", params: { uid: uid } });
             window.open(userUrl.href, '_blank');
         }
@@ -100,8 +101,8 @@ export default {
             });
         }
 
-        const lazyLoading = (e) => {
-            if (e.target.id === "followBox") {
+        const lazyLoading = (e:Event) => {
+            if ((e.target as HTMLElement).id === "followBox") {
                 const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
                 const clientHeight = document.documentElement.clientHeight;
                 const scrollHeight = document.documentElement.scrollHeight;
@@ -146,7 +147,7 @@ export default {
         NScrollbar,
         Person
     },
-};
+})
 </script>
 
 <style lang="less" scoped>

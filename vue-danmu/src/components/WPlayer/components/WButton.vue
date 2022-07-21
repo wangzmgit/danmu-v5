@@ -3,8 +3,10 @@
     <slot></slot>
   </button>
 </template>
-<script>
-export default {
+<script lang="ts">
+import { defineComponent, } from 'vue';
+
+export default defineComponent({
   name: "WButton",
   props: {
     type: {
@@ -16,7 +18,7 @@ export default {
       default: false,
     },
   }
-};
+});
 </script>
 
 <style lang="less" scoped>

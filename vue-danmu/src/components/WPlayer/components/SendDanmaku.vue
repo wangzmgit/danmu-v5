@@ -31,7 +31,7 @@
         </ul>
       </div>
       <p class="danmaku-menu-title">弹幕不透明度</p>
-      <slider class="opacity" :value="opacity" @changeValue="setOpacity" />
+      <slider class="opacity" :val="opacity" @changeValue="setOpacity" />
     </div>
     <div class="danmaku-setting" @click="showMenu = !showMenu">
       <svg-icon class="danmaku-setting-icon" icon="setting"></svg-icon>
@@ -41,13 +41,14 @@
   </div>
 </template>
 
-<script>
-import { ref, reactive } from "vue";
+<script lang="ts">
+import { ref, reactive, defineComponent } from "vue";
 import Slider from "./Slider.vue";
 import WSwitch from "../components/WSwitch.vue";
 import SvgIcon from "../components/SvgIcon.vue";
 import WButton from "../components/WButton.vue";
-export default {
+import { danmakuType } from "../types/danmaku";
+export default defineComponent({
   emits: ['setOpacity', 'changeShow', 'showMsg', 'send'],
   props: {
     amount: {
@@ -60,31 +61,34 @@ export default {
     },
   },
   setup(props, ctx) {
-    const danmakuForm = reactive({
+    const danmakuForm = reactive<danmakuType>({
+      vid: 0,
+      time: 0,
       text: "",
       color: "fff",
       type: 0,
+      part: 1,
     });
     const danmaku = ref(props.show);
     const showMenu = ref(false);
     const opacity = ref(100);
 
-    const setType = (type) => {
+    const setType = (type: number) => {
       danmakuForm.type = type;
     }
 
     //设置弹幕不透明度
-    const setOpacity = (val) => {
+    const setOpacity = (val: number) => {
       ctx.emit('setOpacity', val);
     }
 
     //设置弹幕颜色
-    const setColor = (color) => {
+    const setColor = (color: string) => {
       danmakuForm.color = color;
     }
 
     //开启或关闭弹幕
-    const setShow = (val) => {
+    const setShow = (val: boolean) => {
       danmaku.value = val;
       ctx.emit('changeShow', val);
     }
@@ -124,7 +128,7 @@ export default {
     WButton,
 
   },
-};
+});
 </script>
 
 <style lang="less" scoped>
@@ -156,11 +160,11 @@ export default {
   height: 30px;
   margin: 0 16px;
   cursor: pointer;
+}
 
-  .danmaku-setting-icon {
-    width: 30px;
-    height: 30px;
-  }
+.danmaku-setting-icon {
+  width: 30px;
+  height: 30px;
 }
 
 .danmaku-input {

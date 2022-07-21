@@ -58,7 +58,7 @@ export default defineComponent({
         const message = useMessage();//通知
         //用户信息
         const userInfo = computed(() => {
-            return storage.get("userInfo") as userInfoType;
+            return storage.get("userInfo");
         })
 
 

@@ -30,22 +30,8 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const userInfo = computed((): userInfoType => {
-
-      const info: userInfoType = {
-        uid: 0,
-        name: "",
-        avatar: "",
-        gender: 0,
-        sign: "",
-        birthday: ""
-      }
-
-      if (storage.get("userInfo")) {
-        return storage.get("userInfo") as userInfoType;
-      } else {
-        return info;
-      }
+    const userInfo = computed(() => {
+      return storage.get("userInfo");
     })
 
     const headerRouter = (page: string) => {
