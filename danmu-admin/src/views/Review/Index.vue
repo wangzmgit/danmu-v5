@@ -44,20 +44,21 @@
     </n-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import VideoList from './components/VideoList.vue';
 import { NDrawer, NDrawerContent } from 'naive-ui';
-import { NTable,NButton, NCard, NTime, useNotification } from 'naive-ui';
+import { NTable, NButton, NCard, NTime, useNotification } from 'naive-ui';
 import { getReviewListAPI, getResourceListAPI, reviewVideoAPI } from '@/api/review';
-import { onBeforeMount, reactive, ref } from 'vue';
-export default {
+import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
+import { videoType } from '@/types/video';
+export default defineComponent({
     setup() {
         const pagination = reactive({
             current: 1,
             pageSize: 8,
         })
 
-        const videos = ref([]);
+        const videos = ref<Array<videoType>>([]);
         const notification = useNotification();//通知
 
         const getVideoList = () => {
@@ -77,7 +78,7 @@ export default {
         const resources = ref([]);//视频资源
         const activeDrawer = ref(false);//是否打开审核抽屉
         //获取审核资源
-        const getResourceList = (vid) => {
+        const getResourceList = (vid: number) => {
             getResourceListAPI(vid).then((res) => {
                 if (res.data.code === 2000) {
                     resources.value = res.data.data.video;
@@ -93,7 +94,7 @@ export default {
         }
 
         //审核视频
-        const reviewVideo = (vid, status) => {
+        const reviewVideo = (vid: number, status: boolean) => {
             reviewVideoAPI(vid, status).then((res) => {
                 if (res.data.code === 2000) {
                     getVideoList();
@@ -108,7 +109,7 @@ export default {
         }
 
         //允许转载
-        const toCopyright = (copyright) => {
+        const toCopyright = (copyright: boolean) => {
             if (copyright) return "否";
             else return "是";
         }
@@ -136,7 +137,7 @@ export default {
         NDrawerContent,
         VideoList
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

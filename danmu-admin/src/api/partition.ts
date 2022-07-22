@@ -1,12 +1,13 @@
+import { addPartitionType } from '@/types/partition';
 import request from '@/utils/request';
 
 //添加分区
-export const addPartitionAPI = ({ content, parentId }) => {
-    return request.post('v1/partition/add', { content, parentId });
+export const addPartitionAPI = (partition: addPartitionType) => {
+    return request.post('v1/partition/add', partition);
 }
 
 //删除分区
-export const deletePartitionAPI = (id) => {
+export const deletePartitionAPI = (id: number) => {
     return request.post('v1/partition/delete', { id });
 }
 

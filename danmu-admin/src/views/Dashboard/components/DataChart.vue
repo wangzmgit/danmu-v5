@@ -4,26 +4,32 @@
     </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script lang="ts">
+import theme from './theme.json';
 import * as echarts from "echarts";
-import theme from './theme.json'
+import { defineComponent, ref } from "vue";
 import { onMounted, onUnmounted } from 'vue';
-export default {
+
+export default defineComponent({
     props: {
         data: {
-            type: Object
+            type: Array as () => Array<{
+                date: string,
+                user: number,
+                video: number
+            }>,
+            required: true
         }
     },
     setup(props) {
         const echart = echarts;
-        const date = ref([]);
-        const newUser = ref([]);
-        const newVideo = ref([]);
+        const date = ref<Array<string>>([]);
+        const newUser = ref<Array<number>>([]);
+        const newVideo = ref<Array<number>>([]);
 
         const initChart = () => {
             echart.registerTheme('westeros', theme);//注册主题
-            let chart = echart.init(document.getElementById("echart"), "westeros");
+            let chart = echart.init(document.getElementById("echart")!, "westeros");
             chart.setOption({
                 legend: {
                     data: ['新增用户', '新增视频']
@@ -76,7 +82,7 @@ export default {
             initChart
         };
     }
-};
+});
 </script>
 
 <style lang="less">

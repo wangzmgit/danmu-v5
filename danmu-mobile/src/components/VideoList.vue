@@ -18,7 +18,7 @@ import { baseVideoType } from '@/types/video';
 export default {
     props: {
         videos: {
-            type: Array as () => baseVideoType[]
+            type: Array as () => Array<baseVideoType>
         }
     },
     setup() {

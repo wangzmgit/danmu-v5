@@ -21,16 +21,17 @@
     </div>
 </template>
 
-<script>
-import { reactive, ref } from 'vue';
+<script lang="ts">
+import { defineComponent, reactive, ref } from 'vue';
 import { loginAPI, rootLoginAPI } from '@/api/user';
 import storage from '@/utils/stored-data';
 import { useRouter } from 'vue-router';
-import { NForm, NFormItem, NButton, NInput, NCheckbox, useNotification } from 'naive-ui';
-export default {
+import { NForm, FormInst, FormRules, NFormItem, NButton, NInput, NCheckbox, useNotification } from 'naive-ui';
+
+export default defineComponent({
     setup(_props) {
 
-        const formRef = ref(null);
+        const formRef = ref<FormInst | null>(null);
         const router = useRouter();
         const notification = useNotification();//通知
 
@@ -39,7 +40,7 @@ export default {
             password: "",
         })
 
-        const rules = {
+        const rules: FormRules = {
             email: [
                 { required: true, message: "请输入邮箱", trigger: ['blur', 'input'] },
                 { type: "email", message: "请输入正确的邮箱地址", trigger: ['blur', 'input'] },
@@ -49,12 +50,12 @@ export default {
 
         //改变登录方式
         const root = ref(false);
-        const loginChange = (val) => {
+        const loginChange = (val: boolean) => {
             root.value = val;
         }
 
         const loginClick = () => {
-            formRef.value.validate((errors) => {
+            formRef.value?.validate((errors) => {
                 if (!errors) {
                     if (root.value) {
                         rootLogin();
@@ -125,7 +126,7 @@ export default {
         NInput,
         NCheckbox
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

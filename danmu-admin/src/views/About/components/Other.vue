@@ -24,12 +24,13 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, reactive } from "vue";
+<script lang="ts">
+import { defineComponent, onBeforeMount, reactive } from "vue";
 import { getOtherAPI, setOtherAPI } from '@/api/config';
 import { NInput, NSelect, NForm, NFormItem, NButton, useNotification } from "naive-ui";
+import { otherType } from "@/types/config";
 
-export default {
+export default defineComponent({
     setup() {
         const notification = useNotification();
         const resOptions = [
@@ -67,7 +68,7 @@ export default {
             })
         }
 
-        const otherForm = reactive({
+        const otherForm = reactive<otherType>({
             prefix: '',
             maxRes: 0,
             fePath: '',
@@ -103,7 +104,7 @@ export default {
         NButton,
         NFormItem,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

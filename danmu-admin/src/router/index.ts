@@ -1,18 +1,18 @@
 import storage from "@/utils/stored-data";
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
-const home = () => import("../views/Home/Index");
-const login = () => import("../views/Login/Index");
-const review = () => import("../views/Review/Index");
-const user = () => import("../views/User/Index");
-const video = () => import("../views/Video/Index");
-const partition = () => import("../views/Partition/Index");
-const carousel = () => import("../views/Carousel/Index");
-const announce = () => import("../views/Announce/Index");
-const dashboard = () => import("../views/Dashboard/Index");
-const about = () => import("../views/About/Index");
+const home = () => import("../views/Home/Index.vue");
+const login = () => import("../views/Login/Index.vue");
+const review = () => import("../views/Review/Index.vue");
+const user = () => import("../views/User/Index.vue");
+const video = () => import("../views/Video/Index.vue");
+const partition = () => import("../views/Partition/Index.vue");
+const carousel = () => import("../views/Carousel/Index.vue");
+const announce = () => import("../views/Announce/Index.vue");
+const dashboard = () => import("../views/Dashboard/Index.vue");
+const about = () => import("../views/About/Index.vue");
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
     { path: "/", redirect: "/home" },
     {
         path: "/login",

@@ -8,7 +8,7 @@
             <span class="role">{{ toRoleText(userInfo.role) }}</span>
         </div>
     </n-card>
-    <n-card  class="card">
+    <n-card class="card">
         <data-chart v-if="!loadingChart" :data="recentData"></data-chart>
     </n-card>
     <n-card class="card">
@@ -26,15 +26,15 @@
     </n-card>
 </template>
 
-<script>
+<script lang="ts">
 import storage from '@/utils/stored-data';
-import { onBeforeMount, reactive, ref, computed } from 'vue';
+import { onBeforeMount, reactive, ref, computed, defineComponent } from 'vue';
 import DataChart from './components/DataChart.vue';
 import { getTotalDataAPI, getRecentDataAPI } from '@/api/dashboard';
 import { NIcon, NCard, NNumberAnimation } from 'naive-ui';
 import { PersonOutline, VideocamOutline, CreateOutline, MailOutline } from '@vicons/ionicons5';
 import CommonAvatar from '@/components/CommonAvatar.vue';
-export default {
+export default defineComponent({
     setup() {
         //今日数据
         const todayData = reactive([
@@ -114,7 +114,7 @@ export default {
             }
         })
 
-        const toRoleText = (role) => {
+        const toRoleText = (role: number) => {
             switch (role) {
                 case 1:
                     return '审核';
@@ -151,7 +151,7 @@ export default {
         MailOutline,
         CommonAvatar
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

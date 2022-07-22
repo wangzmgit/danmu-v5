@@ -6,12 +6,13 @@
   </n-config-provider>
 </template>
 
-<script>
+<script lang="ts">
 import {
   zhCN, dateZhCN,
   NNotificationProvider, NConfigProvider
 } from 'naive-ui';
-export default {
+import { defineComponent } from 'vue';
+export default defineComponent({
   name: 'App',
   setup() {
     return {
@@ -23,7 +24,7 @@ export default {
     NConfigProvider,
     NNotificationProvider
   }
-}
+});
 </script>
 
 <style>

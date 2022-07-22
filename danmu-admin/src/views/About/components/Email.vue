@@ -29,12 +29,12 @@
     </div>
 </template>
 
-<script>
-import { onBeforeMount, reactive } from "vue";
+<script lang="ts">
+import { defineComponent, onBeforeMount, reactive } from "vue";
 import { getEmailAPI, setEmailAPI } from '@/api/config';
 import { NSwitch, NInput, NInputNumber, NForm, NFormItem, NButton, useNotification } from "naive-ui";
 
-export default {
+export default defineComponent({
     setup() {
         const notification = useNotification();
 
@@ -88,7 +88,7 @@ export default {
         NFormItem,
         NInputNumber
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

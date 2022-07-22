@@ -1,7 +1,7 @@
 <template>
     <div class="about">
         <n-card v-for="item in serverInfo" class="card-item" :title="item.title">
-            <span>版本：{{ item.version?item.version:'未知' }}</span>
+            <span>版本：{{ item.version ? item.version : '未知' }}</span>
             <span>当前状态：{{ item.status ? '正常' : '异常' }}</span>
         </n-card>
         <n-card class="card-item" title="前端">
@@ -11,15 +11,19 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import { NCard } from "naive-ui";
 import { getServerDataAPI } from '@/api/config';
-import { onBeforeMount, ref } from "vue";
+import { defineComponent, onBeforeMount, ref } from "vue";
 
-export default {
+export default defineComponent({
     setup() {
-        const feInfo = ref({});
-        const serverInfo = ref([]);
+        const feInfo = ref<any>({});
+        const serverInfo = ref<Array<{
+            title: string,
+            version: string,
+            status: boolean
+        }>>([]);
         const getServerData = () => {
             getServerDataAPI().then((res) => {
                 if (res.data.code === 2000) {
@@ -35,7 +39,7 @@ export default {
                     for (let key in resData) {
                         if (typeof (resData[key]) !== 'object') {
                             serverInfo.value.push({
-                                title: infoMeaning.get(key),
+                                title: infoMeaning.get(key) || '未知',
                                 version: resData[key],
                                 status: resData[key] ? true : false
                             })
@@ -57,7 +61,7 @@ export default {
     components: {
         NCard
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

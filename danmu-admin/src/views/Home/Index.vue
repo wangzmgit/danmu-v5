@@ -14,9 +14,9 @@
     </div>
 </template>
 
-<script>
-import { h, ref } from "vue";
-import config from '@/config.js';
+<script lang="ts">
+import { defineComponent, h } from "vue";
+import config from '@/config';
 import { NIcon, NMenu } from "naive-ui";
 import { RouterLink } from 'vue-router';
 import HeaderBar from '@/components/HeaderBar.vue';
@@ -24,7 +24,7 @@ import {
     BarChartOutline, CreateOutline, PersonOutline, VideocamOutline,
     CheckboxOutline, ImageOutline, GitMergeOutline, InformationCircleOutline
 } from "@vicons/ionicons5";
-export default {
+export default defineComponent({
     setup() {
         const title = config.title;
         const menuOptions = [
@@ -143,7 +143,7 @@ export default {
         ];
 
 
-        function renderIcon(icon) {
+        function renderIcon(icon: any) {
             return () => h(NIcon, null, { default: () => h(icon) });
         }
 
@@ -157,7 +157,7 @@ export default {
         NMenu,
         HeaderBar
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

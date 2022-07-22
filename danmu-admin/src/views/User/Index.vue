@@ -63,23 +63,24 @@
     </n-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import { useRoute } from 'vue-router';
+import { userType, modifyUserType } from '@/types/user';
 import storage from '@/utils/stored-data';
 import SearchBox from '@/components/SearchBox.vue';
-import CommonAvatar from '@/components/CommonAvatar';
-import { onBeforeMount, reactive, ref } from 'vue';
+import CommonAvatar from '@/components/CommonAvatar.vue';
+import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
 import {
-    NTable, NButton, NCard, NTime, NInput, NDrawer, NSelect,
-    NDrawerContent, NForm, NFormItem, NPagination, useNotification
+    NTable, NButton, NCard, NTime, NInput, NDrawer, NSelect, FormRules,
+    FormInst, NDrawerContent, NForm, NFormItem, NPagination, useNotification
 } from 'naive-ui';
 import { getUserListAPI, searchUserAPI, modifyUserAPI, deleteUserAPI, modifyRoleAPI } from '@/api/user';
 
-export default {
+export default defineComponent({
     setup() {
         const page = ref(1);
         const count = ref(0);
-        const userList = ref([]);
+        const userList = ref<Array<userType>>([]);
         const notification = useNotification();//通知
 
         const getUserList = () => {
@@ -88,7 +89,7 @@ export default {
                     count.value = res.data.data.count;
                     userList.value = res.data.data.users;
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '加载失败',
                     duration: 5000,
@@ -97,7 +98,7 @@ export default {
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getUserList();
         }
@@ -118,12 +119,12 @@ export default {
             },
         ]
         const disabledRole = storage.get("adminInfo").role === 3 ? false : true;
-        const changeRole = (val, uid) => {
+        const changeRole = (val: number, uid: number) => {
             modifyRoleAPI({ uid: uid, role: val }).then((res) => {
                 if (res.data.code === 2000) {
                     getUserList();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '修改失败',
                     duration: 5000,
@@ -134,7 +135,7 @@ export default {
 
         //搜索
         const keyword = ref('');
-        const searchUser = (keyword) => {
+        const searchUser = (keyword: string) => {
             page.value = 1;
             count.value = 0;
             if (!keyword) {
@@ -149,15 +150,15 @@ export default {
         }
 
         //编辑用户信息
-        const editForm = reactive({
+        const editForm = reactive<modifyUserType>({
             id: 0,
             name: '',
             email: '',
             sign: ''
         });
         const showEdit = ref(false);
-        const formRef = ref(null);
-        const rules = {
+        const formRef = ref<FormInst | null>(null);
+        const rules: FormRules = {
             email: [
                 { required: true, message: "请输入邮箱", trigger: ['blur', 'input'] },
                 { type: "email", message: "请输入正确的邮箱地址", trigger: ['blur', 'input'] },
@@ -165,7 +166,7 @@ export default {
             name: { required: true, message: '请输入昵称', trigger: ['blur', 'input'] },
         }
         //打开修改抽屉
-        const showEditDrawer = (item) => {
+        const showEditDrawer = (item: any) => {
             editForm.id = item.uid;
             editForm.name = item.name;
             editForm.email = item.email;
@@ -174,7 +175,7 @@ export default {
         }
 
         const submitEdit = () => {
-            formRef.value.validate((errors) => {
+            formRef.value?.validate((errors) => {
                 if (!errors) {
                     modifyUserAPI(editForm).then((res) => {
                         if (res.data.code === 2000) {
@@ -202,7 +203,7 @@ export default {
         }
 
         // 删除
-        const deleteUser = (id) => {
+        const deleteUser = (id: number) => {
             deleteUserAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getUserList();
@@ -218,10 +219,10 @@ export default {
         const route = useRoute();
         onBeforeMount(() => {
             if (route.query.uid) {
-                keyword.value = route.query.uid;
+                keyword.value = route.query.uid.toString();
                 searchUser(keyword.value);
             } else {
-                searchUser();
+                searchUser("");
             }
         })
 
@@ -259,7 +260,7 @@ export default {
         NPagination,
         NDrawerContent,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

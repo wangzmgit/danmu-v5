@@ -26,14 +26,14 @@
     </div>
 </template>
 
-<script>
-import { computed, ref } from 'vue';
+<script lang="ts">
+import { computed, defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import storage from '@/utils/stored-data';
 import { NInput, NIcon, NButton, NAvatar } from 'naive-ui';
 import { Search, Person, MailOutline, BookmarkOutline } from '@vicons/ionicons5';
 
-export default {
+export default defineComponent({
     setup() {
         const router = useRouter();
 
@@ -47,7 +47,7 @@ export default {
             return storage.get("adminInfo");
         })
 
-        const goPage = (name) => {
+        const goPage = (name: string) => {
             router.push({ name: name });
         }
 
@@ -69,7 +69,7 @@ export default {
         BookmarkOutline,
 
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

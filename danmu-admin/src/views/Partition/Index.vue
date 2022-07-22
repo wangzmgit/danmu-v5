@@ -34,20 +34,25 @@
     </n-card>
 </template>
 
-<script>
-import { ref, reactive, onBeforeMount } from 'vue';
+<script lang="ts">
+import { ref, reactive, onBeforeMount, defineComponent } from 'vue';
 import {
-    NButton, NDrawer, NDrawerContent, NInput,NCard,
+    NButton, NDrawer, NDrawerContent, NInput, NCard,
     NSelect, NForm, NFormItem, useNotification
 } from "naive-ui";
-import { getAllPartitionAPI, addPartitionAPI, deletePartitionAPI } from "@/api/partition.js";
-export default {
+import { getAllPartitionAPI, addPartitionAPI, deletePartitionAPI } from "@/api/partition";
+import { partitionType } from '@/types/partition';
+
+export default defineComponent({
     setup() {
         const notification = useNotification();
 
         //获取所有分区
-        const allPartition = ref([]);
-        const partitions = ref([]);//一级分区
+        const allPartition = ref<Array<partitionType>>([]);
+        const partitions = ref<Array<{
+            label: string,
+            value: number
+        }>>([]);//一级分区
         const getAllPartitionList = () => {
             getAllPartitionAPI().then((res) => {
                 if (res.data.code === 2000) {
@@ -73,7 +78,7 @@ export default {
         }
 
         //删除分区
-        const deletePartition = (id) => {
+        const deletePartition = (id: number) => {
             deletePartitionAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getAllPartitionList();
@@ -105,7 +110,7 @@ export default {
                     showAdd.value = false;
                     getAllPartitionList();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '创建分区失败',
                     duration: 5000
@@ -136,7 +141,7 @@ export default {
         NFormItem,
         NDrawerContent,
     }
-};
+});
 </script>
 
 <style lang="less" scoped>

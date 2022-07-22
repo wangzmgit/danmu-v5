@@ -1,5 +1,5 @@
 <template>
-    <video id="player" class="video" preload="auto" controls></video>
+    <video ref="playerRef" class="video" preload="auto" controls></video>
     <div class="video-box">
         <n-scrollbar style="max-height: 300px;">
             <div class="video-item" v-for="(item, index) in resources">
@@ -16,22 +16,23 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import Hls from "hls.js";
-import { onUnmounted, ref } from "vue";
+import { resourceType } from '@/types/resource';
+import { defineComponent, onUnmounted, ref } from "vue";
 import { reviewResourceAPI } from "@/api/review";
 import { NScrollbar, NIcon, NTag, useNotification } from "naive-ui";
-export default {
+export default defineComponent({
     props: {
         list: {
-            type: Array
+            type: Array as () => Array<resourceType>
         }
     },
     setup(props) {
         const resources = ref(props.list);
         const notification = useNotification();//通知
 
-        const toTagType = (state) => {
+        const toTagType = (state: number) => {
             switch (state) {
                 case 2000:
                     return "success";
@@ -42,7 +43,7 @@ export default {
             }
         }
 
-        const toTagText = (state) => {
+        const toTagText = (state: number) => {
             switch (state) {
                 case 200:
                     return "视频处理中";
@@ -59,8 +60,8 @@ export default {
             }
         }
 
-        const hls = ref(null);
-        const initPlayer = (src, player) => {
+        const hls = ref<Hls | null>(null);
+        const initPlayer = (src: string, player: HTMLVideoElement) => {
             if (!hls.value) hls.value = new Hls();
             hls.value.loadSource(src);
             hls.value.attachMedia(player);
@@ -73,16 +74,17 @@ export default {
         }
 
         //播放视频
-        const playVideo = (resource) => {
+        const playerRef = ref<HTMLVideoElement | null>(null);
+        const playVideo = (resource: resourceType) => {
             const src = resource.original ? resource.original : resource.res360;
-            initPlayer(src, document.getElementById("player"));
+            initPlayer(src, playerRef.value!);
         }
 
         //审核资源
-        const reviewResource = (id, index, status) => {
+        const reviewResource = (id: number, index: number, status: boolean) => {
             reviewResourceAPI(id, status).then((res) => {
                 if (res.data.code === 2000) {
-                    resources.value.splice(index, 1);
+                    resources.value?.splice(index, 1);
                 }
             }).catch((err) => {
                 notification.error({
@@ -102,6 +104,7 @@ export default {
         })
 
         return {
+            playerRef,
             resources,
             toTagType,
             toTagText,
@@ -114,7 +117,7 @@ export default {
         NIcon,
         NScrollbar,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

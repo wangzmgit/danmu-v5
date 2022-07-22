@@ -20,15 +20,16 @@
     </n-card>
 </template>
 
-<script>
-import Info from './components/Info';
-import Email from './components/Email';
-import Storage from './components/Storage';
-import Database from './components/Database';
+<script lang="ts">
+import Info from './components/Info.vue';
+import Email from './components/Email.vue';
+import Storage from './components/Storage.vue';
+import Database from './components/Database.vue';
 import Other from './components/Other.vue';
 import { NCard, NTabs, NTabPane } from "naive-ui";
+import { defineComponent } from 'vue';
 
-export default {
+export default defineComponent({
     components: {
         Info,
         Email,
@@ -39,7 +40,7 @@ export default {
         NTabs,
         NTabPane
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

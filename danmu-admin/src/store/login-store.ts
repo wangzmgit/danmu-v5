@@ -8,7 +8,7 @@ export const useLoginStore = defineStore({
         }
     },
     actions: {
-        setLoginState(val) {
+        setLoginState(val: boolean) {
             this.login = val;
         }
     },

@@ -8,12 +8,12 @@
     </n-input>
 </template>
 
-<script>
-import { ref } from 'vue';
+<script lang="ts">
+import { defineComponent, ref } from 'vue';
 import { NInput, NIcon } from 'naive-ui';
 import { Search } from '@vicons/ionicons5';
 
-export default {
+export default defineComponent({
     emits: ['search'],
     props: {
         keyword: {
@@ -37,5 +37,5 @@ export default {
         NInput,
         Search,
     }
-}
+});
 </script>

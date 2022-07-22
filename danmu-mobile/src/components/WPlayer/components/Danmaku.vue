@@ -9,7 +9,7 @@ import { danmakuItemType, drawDanmakuType } from "../types/danmaku";
 export default defineComponent({
   props: {
     list: {
-      type: Array<danmakuItemType>
+      type: Array as () => Array<danmakuItemType>
     }
   },
   setup(props) {

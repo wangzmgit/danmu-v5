@@ -44,7 +44,6 @@ import storage from "@/utils/stored-data";
 import { NButton, NSpin, useMessage } from 'naive-ui';
 import { useRouter } from "vue-router";
 import { getFollowDataAPI } from '@/api/follow';
-import { userInfoType } from "@/types/user";
 import CommonAvatar from "@/components/CommonAvatar.vue";
 import HeaderBar from "@/components/HeaderBar.vue";
 import { videoType } from '@/types/video';

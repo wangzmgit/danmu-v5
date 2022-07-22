@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody class="table-body">
-                <tr v-for="item in carouselList">
+                <tr v-for="(item, index) in carouselList" :key="index">
                     <td>{{ item.id }}</td>
                     <td>
                         <img class="cover" :src="item.img" alt="视频封面">
@@ -43,20 +43,21 @@
     </n-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import {
     NTable, NCard, NTime, NDrawer, NInput, NForm,
     NFormItem, NDrawerContent, NButton, useNotification
 } from 'naive-ui';
 import { getCarouselAPI, addCarouselAPI, deleteCarouselAPI } from '@/api/carousel';
-import { onBeforeMount, reactive, ref } from 'vue';
+import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
 import CarouselUpload from '@/components/CarouselUpload.vue';
+import { carouselType, addCarouselType } from '@/types/carousel';
 
-export default {
+export default defineComponent({
     setup() {
 
         const showAdd = ref(false);//显示编辑抽屉
-        const carouselList = ref([]);
+        const carouselList = ref<Array<carouselType>>([]);
         const notification = useNotification();//通知
 
         const getCarousel = () => {
@@ -73,13 +74,13 @@ export default {
         }
 
         //新增轮播图
-        const carouselForm = reactive({
+        const carouselForm = reactive<addCarouselType>({
             img: '',
             url: ''
         })
 
         //封面上传完成
-        const finishUpload = (cover) => {
+        const finishUpload = (cover: string) => {
             carouselForm.img = cover;
         }
 
@@ -108,12 +109,12 @@ export default {
             });
         }
 
-        const deleteCarousel = (id, index) => {
+        const deleteCarousel = (id: number, index: number) => {
             deleteCarouselAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     carouselList.value.splice(index, 1);
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '删除失败',
                     duration: 5000,
@@ -146,7 +147,7 @@ export default {
         NDrawerContent,
         CarouselUpload
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

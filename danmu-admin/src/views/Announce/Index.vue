@@ -52,20 +52,21 @@
     </n-drawer>
 </template>
 
-<script>
+<script lang="ts">
 import {
     NTable, NCard, NTime, NDrawer, NInput, NPagination,
     NForm, NFormItem, NDrawerContent, NButton, useNotification
 } from 'naive-ui';
 import { getAnnounceListAPI, addAnnounceAPI, deleteAnnounceAPI } from '@/api/announce';
-import { onBeforeMount, reactive, ref } from 'vue';
+import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
+import { announceType } from '@/types/announce';
 
-export default {
+export default defineComponent({
     setup() {
         const page = ref(1);
         const count = ref(0);
         const showAdd = ref(false);//显示编辑抽屉
-        const announceList = ref([]);
+        const announceList = ref<Array<announceType>>([]);
         const notification = useNotification();//通知
 
         const getAnnounceList = () => {
@@ -74,7 +75,7 @@ export default {
                     count.value = res.data.data.count;
                     announceList.value = res.data.data.announces;
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '加载轮播图失败',
                     duration: 5000,
@@ -83,7 +84,7 @@ export default {
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getAnnounceList();
         }
@@ -122,12 +123,12 @@ export default {
             });
         }
 
-        const deleteAnnounce = (id) => {
+        const deleteAnnounce = (id: number) => {
             deleteAnnounceAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getAnnounceList();
                 }
-            }).catch((err) => {
+            }).catch(() => {
                 notification.error({
                     title: '删除失败',
                     duration: 5000,
@@ -162,7 +163,7 @@ export default {
         NPagination,
         NDrawerContent,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

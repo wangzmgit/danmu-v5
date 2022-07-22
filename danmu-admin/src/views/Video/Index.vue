@@ -42,18 +42,19 @@
     </n-card>
 </template>
 
-<script>
-import { onBeforeMount, ref } from 'vue';
+<script lang="ts">
+import { videoType } from '@/types/video';
+import { defineComponent, onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import SearchBox from '@/components/SearchBox.vue';
 import { getVideoListAPI, searchVideoAPI, deleteVideoAPI } from '@/api/video';
 import { NTable, NButton, NCard, NTime, NPagination, useNotification } from 'naive-ui';
 
-export default {
+export default defineComponent({
     setup() {
         const page = ref(1);
         const count = ref(0);
-        const videoList = ref([]);
+        const videoList = ref<Array<videoType>>([]);
         const notification = useNotification();//通知
 
         const getVideoList = () => {
@@ -71,20 +72,20 @@ export default {
         }
 
         //页码改变
-        const pageChange = (target) => {
+        const pageChange = (target: number) => {
             page.value = target;
             getVideoList();
         }
 
         //查找作者
         const router = useRouter();
-        const searchAuthor = (uid) => {
+        const searchAuthor = (uid: number) => {
             router.push({ name: 'User', query: { uid: uid } });
         }
 
         //搜索
         const keyword = ref('');
-        const searchVideo = (keyword) => {
+        const searchVideo = (keyword: string) => {
             page.value = 1;
             count.value = 0;
             if (!keyword) {
@@ -99,7 +100,7 @@ export default {
         }
 
         //删除
-        const deleteVideo = (id) => {
+        const deleteVideo = (id: number) => {
             deleteVideoAPI(id).then((res) => {
                 if (res.data.code === 2000) {
                     getVideoList();
@@ -135,7 +136,7 @@ export default {
         SearchBox,
         NPagination,
     }
-}
+});
 </script>
 
 <style lang="less" scoped>

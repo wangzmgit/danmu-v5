@@ -21,7 +21,6 @@ import { defineComponent, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import storage from '@/utils/stored-data';
 import CommonAvatar from "./CommonAvatar.vue";
-import { userInfoType } from "@/types/user";
 import { NIcon, NInput } from "naive-ui";
 import { MailOutline, Search } from '@vicons/ionicons5'
 

@@ -7,10 +7,11 @@
     </n-avatar>
 </template>
 
-<script>
+<script lang="ts">
 import { NAvatar, NIcon } from "naive-ui";
 import { Person } from '@vicons/ionicons5';
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
     props: {
         url: {
             type: String,
@@ -29,5 +30,5 @@ export default {
         NAvatar,
         Person
     }
-}
+});
 </script>

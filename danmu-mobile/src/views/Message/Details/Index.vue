@@ -44,7 +44,6 @@ import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NInput, NIcon, NButton, useMessage } from 'naive-ui';
 import { messageDetailsType } from '@/types/message'
 import { ChevronBackOutline } from '@vicons/ionicons5'
-import { userInfoType } from '@/types/user';
 import { onBeforeMount, onBeforeUnmount, reactive, ref, computed, nextTick, defineComponent } from 'vue';
 
 export default defineComponent({
