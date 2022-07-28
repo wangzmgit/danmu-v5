@@ -36,14 +36,14 @@
 
 <script lang="ts">
 import { Base64 } from 'js-base64';
-import { useRoute, useRouter } from 'vue-router';
 import storage from '@/utils/stored-data';
 import { MsgSocketURL } from '@/utils/request';
+import { useRoute, useRouter } from 'vue-router';
 import { getMsgDetailsAPI, sendMsgAPI } from '@/api/message';
 import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NInput, NIcon, NButton, useMessage } from 'naive-ui';
-import { messageDetailsType } from '@/types/message'
-import { ChevronBackOutline } from '@vicons/ionicons5'
+import { messageDetailsType } from '@/types/message';
+import { ChevronBackOutline } from '@vicons/ionicons5';
 import { onBeforeMount, onBeforeUnmount, reactive, ref, computed, nextTick, defineComponent } from 'vue';
 
 export default defineComponent({

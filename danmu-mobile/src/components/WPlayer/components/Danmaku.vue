@@ -72,7 +72,7 @@ export default defineComponent({
       let width = danmakuRef.value!.offsetWidth;
       duration = Math.ceil((width + text.length * 20) / (3000 / duration)) + currentTime.value;
       //计算弹道数量
-      let tunnnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
+      let tunnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
       //遍历轨道
       for (let i = 0; i < danmakuTunnel.row.length; i++) {
         //如果当前轨道结束时间小于新弹幕的结束时间
@@ -83,12 +83,12 @@ export default defineComponent({
         }
       }
       //如果没有则尝试新增加弹道
-      if (danmakuTunnel.row.length < tunnnel) {
+      if (danmakuTunnel.row.length < tunnel) {
         danmakuTunnel.row.push(duration);
         return danmakuTunnel.row.length - 1;
       }
       //如果不可以新增弹道，则使用随机弹道
-      return Math.round(Math.random() * tunnnel);
+      return Math.round(Math.random() * tunnel);
     }
 
     //获取固定弹道
@@ -96,7 +96,7 @@ export default defineComponent({
       //当前弹幕结束时间
       let duration = currentTime.value + 5;
       //计算弹道数量
-      let tunnnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
+      let tunnel = Math.floor(danmakuRef.value!.offsetHeight / 26);
       switch (type) {
         case 1:
           //遍历轨道
@@ -109,7 +109,7 @@ export default defineComponent({
             }
           }
           //如果没有则尝试新增加弹道
-          if (danmakuTunnel.top.length < tunnnel) {
+          if (danmakuTunnel.top.length < tunnel) {
             danmakuTunnel.top.push(duration);
             return danmakuTunnel.top.length - 1;
           }
@@ -125,14 +125,14 @@ export default defineComponent({
             }
           }
           //如果没有则尝试新增加弹道
-          if (danmakuTunnel.bottom.length < tunnnel) {
+          if (danmakuTunnel.bottom.length < tunnel) {
             danmakuTunnel.bottom.push(duration);
             return danmakuTunnel.bottom.length - 1;
           }
           break;
       }
       //如果不可以新增弹道，则使用随机弹道
-      return Math.round(Math.random() * tunnnel);
+      return Math.round(Math.random() * tunnel);
     }
 
     const drawDanmaku = (draw: drawDanmakuType, send: boolean) => {

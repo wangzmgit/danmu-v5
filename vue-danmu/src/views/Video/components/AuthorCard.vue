@@ -93,9 +93,6 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-// .author-loading {
-
-// }
 
 .video-author {
     width: 100%;

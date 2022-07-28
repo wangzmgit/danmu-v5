@@ -42,7 +42,7 @@
             </div>
             <div class="content-right">
                 <!--作者信息-->
-                <author-card :loading="loading" :author="videoInfo!.author"></author-card>
+                <author-card :loading="loading" :author="videoInfo?.author"></author-card>
                 <!-- 视频分集 -->
                 <div v-if="resources.length > 1">
                     <part-list :resources="resources" :active="part" @change="changePart"></part-list>
@@ -56,6 +56,7 @@
 
 <script lang="ts">
 import config from '@/config';
+import { statType } from '@/types/archive';
 import { useRoute, useRouter } from 'vue-router';
 import { NIcon, NTime, NButton, NSkeleton } from 'naive-ui';
 import { defineComponent, onBeforeMount, onBeforeUnmount, reactive, ref } from 'vue';
@@ -81,7 +82,10 @@ export default defineComponent({
         const title = config.title;
         const part = ref(1);//当前分集
         const more = ref(false);//是否展开简介
-        const stat = ref({});//点赞收藏数据
+        const stat = ref<statType>({
+            like: 0,
+            collect: 0
+        });//点赞收藏数据
         const loading = ref(true);
         const resources = ref([]);
         const videoInfo = ref<videoType | null>(null);
@@ -91,7 +95,7 @@ export default defineComponent({
             getVideoInfoAPI(vid).then((res) => {
                 if (res.data.code === 2000) {
                     videoInfo.value = res.data.data.video;
-                    resources.value = res.data.data.resources;
+                    resources.value = res.data.data.video.resources;
                     //设置播放的资源
                     if (!resources.value[part.value - 1]) {
                         part.value = 1;
