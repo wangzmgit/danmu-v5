@@ -27,7 +27,7 @@
                 <span>{{ item.content }}</span>
             </div>
             <div class="content-text" v-else v-for="content in handleMention(item.content)">
-                <span :class="content.class" @click="goMention(content.key!)">{{ content.value }}</span>
+                <span :class="content.class" @click="goMention(content.key)">{{ content.value }}</span>
             </div>
         </div>
         <!--动态回复框-->
@@ -37,7 +37,7 @@
                 <!--输入框-->
                 <n-input class="reply-input" v-model:value="replyForm.content" :placeholder="replyTip" maxlength="200"
                     show-count type="textarea" :autosize="descSize" />
-                <n-button type="primary" @click="submitReply(item.id)">回复</n-button>
+                <n-button type="primary" @click="submitReply(item)">回复</n-button>
             </div>
         </div>
         <!--回复-->
@@ -64,7 +64,7 @@
                         <span>{{ reply.content }}</span>
                     </div>
                     <div class="content-text" v-else v-for="content in handleMention(reply.content)">
-                        <span :class="content.class" @click="goMention(content.key!)">{{ content.value }}</span>
+                        <span :class="content.class" @click="goMention(content.key)">{{ content.value }}</span>
                     </div>
                 </div>
             </div>
@@ -88,8 +88,7 @@ import { addCommentAPI } from '@/api/comment';
 import useComment from '@/hooks/comment';
 import CommonAvatar from '@/components/CommonAvatar.vue';
 import { NButton, NInput, NIcon, NTime, useNotification } from "naive-ui";
-import { postCommentType } from '@/types/comment';
-import { userInfoType } from '@/types/user';
+import { postCommentType, commentType } from '@/types/comment';
 
 export default defineComponent({
     props: {
@@ -111,11 +110,11 @@ export default defineComponent({
             parentId: 0,
         })
 
+        const replyUser = ref("");
         const replyForm = reactive({
             vid: props.vid,
             content: "",
             parentId: 0,
-            replyUser: ""
         })
 
         const userInfo = computed(() => {
@@ -136,6 +135,20 @@ export default defineComponent({
         const addComment = () => {
             addCommentAPI(commentForm).then((res) => {
                 if (res.data.code === 2000) {
+                    //加载评论
+                    if (noMore.value) {
+                        commentList.value.push({
+                            id: res.data.data.id,
+                            uid: userInfo.value.uid,
+                            name: userInfo.value.name,
+                            avatar: userInfo.value.avatar,
+                            content: commentForm.content,
+                            created_at: new Date().toDateString(),
+                            reply: [],
+                            page: 1,
+                            noMore: true
+                        })
+                    }
                     notification.success({
                         title: '发布成功',
                         duration: 5000,
@@ -152,10 +165,13 @@ export default defineComponent({
         }
 
         //提交回复
-        const submitReply = (cid: number) => {
-            replyForm.parentId = cid;
-            if (replyForm.replyUser) {
-                replyForm.content = `回复 @${replyForm.replyUser} :${replyForm.content}`;
+        const submitReply = (comment: commentType) => {
+            replyForm.parentId = comment.id;
+            if (replyUser.value) {
+                replyForm.content = `回复 @${replyUser.value} :${replyForm.content}`;
+            }
+            if (comment.reply.length < replyCount) {
+                comment.noMore = true;
             }
             addCommentAPI(replyForm).then((res) => {
                 if (res.data.code === 2000) {
@@ -164,7 +180,22 @@ export default defineComponent({
                         duration: 5000,
                     });
 
+                    if (comment.noMore) {
+                        const newReply = {
+                            id: res.data.data.id,
+                            uid: userInfo.value.uid,
+                            name: userInfo.value.name,
+                            avatar: userInfo.value.avatar,
+                            content: replyForm.content,
+                            created_at: new Date().toDateString(),
+                        }
+                        comment.reply.push(newReply);
+                    }
                     replyForm.content = "";
+                    //关闭动态回复框
+                    showReplyFlag.value.forEach((item,index) => {
+                        if (item) showReplyFlag.value[index] = false;
+                    });
                 }
             }).catch((err) => {
                 notification.error({
@@ -195,7 +226,7 @@ export default defineComponent({
             }
             if (name) {
                 replyTip.value = `回复 @${name}: `;
-                replyForm.replyUser = name;
+                replyUser.value = name;
             }
             showReplyFlag.value[index] = true;
         }
@@ -216,7 +247,7 @@ export default defineComponent({
                 }
 
                 commentList.value[index].page += 1;
-                (commentList.value[index].reply)?.push(...res);
+                commentList.value[index].reply.push(...res);
             })
         }
 
@@ -244,9 +275,11 @@ export default defineComponent({
         const { handleMention } = useMention();
 
         //前往@的用户
-        const goMention = (name: string) => {
-            let userUrl = router.resolve({ name: 'MentionUser', params: { name: name } });
-            window.open(userUrl.href, '_blank');
+        const goMention = (name: string | null) => {
+            if (name) {
+                let userUrl = router.resolve({ name: 'MentionUser', params: { name: name } });
+                window.open(userUrl.href, '_blank');
+            }
         }
 
         onBeforeMount(() => {

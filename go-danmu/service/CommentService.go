@@ -23,13 +23,17 @@ func AddCommentService(comment dto.AddCommentDto, uid uint) response.ResponseStr
 		Msg:        response.OK,
 	}
 
-	DB := common.GetDB()
-	DB.Create(&model.Comment{
+	newComment := model.Comment{
 		Vid:      comment.Vid,
 		Content:  comment.Content,
 		ParentID: comment.ParentID,
 		Uid:      uid,
-	})
+	}
+
+	DB := common.GetDB()
+	DB.Create(&newComment)
+
+	res.Data = gin.H{"id": newComment.ID}
 	return res
 }
 

@@ -11,7 +11,7 @@ export interface commentType {
     uid: number,
     name: string,
     avatar: string,
-    reply: Array<replyType> | null,
+    reply: Array<replyType>,
     created_at: string,
     page: number,//回复页码
     noMore: boolean
