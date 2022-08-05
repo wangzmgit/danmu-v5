@@ -15,18 +15,20 @@ danmu_v5
 
 ## 项目文档
 
-开发交流群 909847398
+`开发交流群 909847398`
 
-部署文档 http://www.kuukaa.fun/quick_use/config.html
+新版本使用go + vue3 + ts + NaiveUI开发，旧版本使用go + vue2 + antd 开发，相关链接在下方表格：
 
-接口文档 http://www.kuukaa.fun/api/explain.html
-
-旧版本后端 https://gitee.com/wzmgit/go-danmu
-
-旧版本前端 https://gitee.com/wzmgit/vue-danmu 
-
-旧版本演示视频 https://www.bilibili.com/video/BV1TA411F7xz
-
+|内容|新版本|
+|:-----  |:-----|
+|演示视频 |[新版]( https://www.bilibili.com/video/BV1DT411E7oV) - [旧版](https://www.bilibili.com/video/BV1TA411F7xz)  |
+|新版项目地址 |[gitee](https://gitee.com/wzmgit/danmu-v5) - [github](https://github.com/wangzmgit/danmu-v5)  |
+|部署文档 |[新版](http://www.kuukaa.fun/quick_use/config.html) - [旧版](http://old.kuukaa.fun/quick_use/config.html)  |
+|接口文档 |[新版](http://www.kuukaa.fun/api/explain.html) - [旧版](http://old.kuukaa.fun/api/status.html)  |
+|旧版前端地址 |[gitee](https://gitee.com/wzmgit/vue-danmu) - [github](https://github.com/wangzmgit/vue-danmu)  |
+|旧版后端地址 |[gitee](https://gitee.com/wzmgit/go-danmu) - [github](https://github.com/wangzmgit/go-danmu)  |
+|旧版移动端地址 |[gitee](https://gitee.com/wzmgit/danmu-mobile) - [github](https://github.com/wangzmgit/danmu-mobile)  |
+|旧版管理端地址 |[gitee](https://gitee.com/wzmgit/danmu-admin) - [github](https://github.com/wangzmgit/danmu-admin)  |
 
 
 ## 使用教程
