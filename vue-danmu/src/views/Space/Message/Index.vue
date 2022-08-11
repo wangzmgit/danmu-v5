@@ -86,8 +86,8 @@ export default defineComponent({
         const getMsgList = () => {
             getMsgListAPI().then((res) => {
                 if (res.data.code === 2000) {
-                    const resMsg = res.data.data.messages;
-                    if (resMsg) {
+                    msgList.value = res.data.data.messages;
+                    if (msgList.value) {
                         if (msgForm.fid !== 0) {
                             initSendUser(msgForm.fid)
                         } else if (msgList.value.length > 0) {
@@ -251,7 +251,7 @@ export default defineComponent({
                     created_at: ""
                 });
                 nextTick(() => {
-                    toBottom()
+                    toBottom();
                 })
             } else {
                 msgForm.fid = res.fid;
@@ -299,6 +299,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+// @import url("@/components/Emoji/emoji.css");
 .msg {
     display: flex;
     height: 656px;
