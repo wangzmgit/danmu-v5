@@ -66,7 +66,6 @@ export default defineComponent({
       -webkit-transition: left 0.5s;
       /* Safari and Chrome */
       -o-transition: left 0.5s;
-
       /* Opera */
     }
 

@@ -1,5 +1,6 @@
 <template>
     <header-bar></header-bar>
+    <w-slider class="slider"></w-slider>
     <div class="home-box">
         <div class="home-top">
             <div class="home-top-left">
@@ -21,6 +22,7 @@
 </template>
 
 <script lang="ts">
+import WSlider from '@/components/WPlayer/components/WSlider.vue';
 import { watch, ref, defineComponent } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { NButton } from 'naive-ui';
@@ -61,6 +63,7 @@ export default defineComponent({
         }
     },
     components: {
+        WSlider,
         Login,
         NButton,
         Carousel,
@@ -73,6 +76,11 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.slider {
+    height: 200px;
+    margin-left: 60px;
+}
+
 .home-box {
     width: 80%;
     min-width: 1200px;

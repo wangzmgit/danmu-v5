@@ -1,6 +1,6 @@
 <template>
   <div class="header-box">
-    <common-avatar :url="userInfo.avatar" :size="36" :iconsize="20" @click="headerRouter('Space')"></common-avatar>
+    <common-avatar :url="userInfo ? userInfo.avatar : ''" :size="36" :iconsize="20" @click="headerRouter('Space')" />
     <div class="search-box">
       <n-input v-model:value="keywords" round placeholder="搜索关键词~" @keydown.enter="search">
         <template #suffix>

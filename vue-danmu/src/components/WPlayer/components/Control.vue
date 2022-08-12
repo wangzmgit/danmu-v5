@@ -44,7 +44,7 @@
                 <svg-icon class="control-icon" icon="volume"></svg-icon>
             </w-button>
             <div class="volume" v-show="menus.volume">
-                <slider class="slider" :val="videoInfo.volume" vertical @changeValue="setVolume"></slider>
+                <w-slider class="slider" vertical :value="videoInfo.volume" @changeValue="setVolume"></w-slider>
             </div>
             <w-button class="right-icon" type="text" @click="fullScreen">
                 <svg-icon class="control-icon" icon="fullScreen"></svg-icon>
@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import Slider from './Slider.vue';
+import WSlider from './WSlider.vue';
 import useConfig from '../hooks/config';
 import { ref, onMounted, reactive, defineComponent } from 'vue';
 import SvgIcon from "../components/SvgIcon.vue";
@@ -63,13 +63,7 @@ import WButton from "../components/WButton.vue";
 
 export default defineComponent({
     emits: ['playChange', 'resChange', 'full', 'progressChange', 'volumeChange', 'speedChange'],
-    props: {
-        left: {
-            type: Number,
-            required: true
-        }
-    },
-    setup(props, ctx) {
+    setup(_props, ctx) {
         const blockRef = ref<HTMLElement | null>(null);
         const timeSliderRef = ref<HTMLElement | null>(null);
         const { getConfig, setConfig } = useConfig();
@@ -156,10 +150,12 @@ export default defineComponent({
         // 滑动滑动条
         const slideTimeLine = () => {
             blockRef.value!.onmousedown = function () {
-                let width = timeSliderRef.value!.offsetWidth;
+                const width = timeSliderRef.value!.offsetWidth;
+
                 document.onmousemove = function (e) {
                     //计算新的百分比
-                    let percentage = Math.round(((e.clientX - props.left) / width) * 100) / 100;
+                    const left = timeSliderRef.value!.getBoundingClientRect().left;
+                    let percentage = Math.round(((e.clientX - left) / width) * 100) / 100;
                     percentage = Math.max(0, percentage);
                     percentage = Math.min(percentage, 1);
                     videoInfo.currentTime = percentage * videoInfo.duration;
@@ -264,7 +260,7 @@ export default defineComponent({
         }
     },
     components: {
-        Slider,
+        WSlider,
         SvgIcon,
         WButton,
     }
@@ -385,8 +381,9 @@ export default defineComponent({
     background: rgba(0, 0, 0, 0.7);
 
     .slider {
-        top: 12px;
-        left: 8px;
+        position: absolute;
+        top: 0;
+        left: 14px;
         height: 116px;
     }
 }

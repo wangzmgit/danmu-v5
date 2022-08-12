@@ -35,7 +35,7 @@
         </ul>
       </div>
       <p class="danmaku-menu-title">弹幕不透明度</p>
-      <slider class="opacity" :val="opacity" @changeValue="setOpacity" />
+      <w-slider class="opacity" :value="opacity" @changeValue="setOpacity" />
     </div>
     <div class="bottom-right">
       <input class="danmaku-input" v-model="danmakuForm.text" placeholder="发条弹幕" />
@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import { ref, reactive, defineComponent } from "vue";
-import Slider from "./Slider.vue";
+import WSlider from "./WSlider.vue";
 import WSwitch from "../components/WSwitch.vue";
 import SvgIcon from "../components/SvgIcon.vue";
 import WButton from "../components/WButton.vue";
@@ -121,7 +121,7 @@ export default defineComponent({
     }
   },
   components: {
-    Slider,
+    WSlider,
     WSwitch,
     SvgIcon,
     WButton,

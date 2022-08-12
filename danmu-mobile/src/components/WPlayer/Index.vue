@@ -5,7 +5,7 @@
             @ended="videoEnd" />
         <!-- 控制栏 -->
         <div v-show="showControl" class="control">
-            <control ref="controlRef" :left="offestLeft" :full="isFull" @playChange="setPlayState" @resChange="setRes"
+            <control ref="controlRef" :full="isFull" @playChange="setPlayState" @resChange="setRes"
                 @full="fullScreen" @progressChange="setProgress" @volumeChange="setVolume" @speedChange="setSpeed" />
         </div>
         <!-- 弹幕容器 -->
@@ -65,7 +65,6 @@ export default defineComponent({
 
         const videoRef = ref<HTMLVideoElement | null>(null);
         const controlRef = ref<any>(null);
-        const offestLeft = ref(0);
 
         const initVideo = () => {
             let duration = videoRef.value!.duration;
@@ -225,12 +224,6 @@ export default defineComponent({
         })
 
         onMounted(() => {
-            //获取播放器到屏幕左侧距离，并监听窗口大小
-            offestLeft.value = playerRef.value.offsetLeft;
-            window.onresize = () => {
-                offestLeft.value = playerRef.value.offsetLeft;
-            }
-
             //初始化视频
             const res = Math.min(playerConfig.defaultRes, maxRes.value);
             setRes(res, 0, playerConfig.autoPlay);
@@ -243,7 +236,6 @@ export default defineComponent({
             videoRef,
             playerRef,
             controlRef,
-            offestLeft,
             playerConfig,
             changeMsg,
             setRes,

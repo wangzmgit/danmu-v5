@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 
 export default function useFullScreen() {
@@ -33,6 +33,12 @@ export default function useFullScreen() {
             isFull.value = false;
         }
     }
+
+    onMounted(() => {
+        window.onresize = () => {
+            isFull.value = isFullScreen();
+        }
+    })
 
     return {
         isFull,
