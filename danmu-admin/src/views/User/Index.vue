@@ -40,7 +40,7 @@
             </tbody>
         </n-table>
         <div class="pagination">
-            <n-pagination v-model:page="page" :item-count="count" :page-size="5" @update-page="pageChange" />
+            <n-pagination v-model:page="page" :item-count="count" :page-size="6" @update-page="pageChange" />
         </div>
     </n-card>
     <!--新增分区-->

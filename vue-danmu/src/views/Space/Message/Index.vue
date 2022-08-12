@@ -20,27 +20,27 @@
                     <!--自己发送的-->
                     <div v-if="item.from_id == userInfo.uid">
                         <common-avatar class="avatar-right" :url="userInfo.avatar" :size="45"></common-avatar>
-                        <span class="content-right">{{ item.content }}</span>
+                        <span class="content-right" v-html="analyzeEmoji(item.content)"></span>
                     </div>
                     <!--收到的-->
                     <div v-else>
                         <common-avatar class="avatar-left" :url="targetUser.avatar" :size="45"></common-avatar>
                         <div class="content-left-box">
-                            <span class="content-left">{{ item.content }}</span>
+                            <span class="content-left" v-html="analyzeEmoji(item.content)"></span>
                         </div>
                     </div>
                     <!-- 解决div无法撑开的问题 -->
                     <div style="clear:both;" />
                 </div>
             </div>
-
             <div class="msg-input">
+                <emoji-selector class="choose-emoji" v-show="showEmojiSelector" @chooseEmoji="chooseEmoji" />
                 <n-input v-model:value="msgForm.content" type="textarea" placeholder="发个消息呗~" maxlength="255" show-count
                     :autosize="descSize" @keydown.enter="sendMsg"></n-input>
                 <div class="btn-box">
-                    <div>
-                        <!-- 此处可以放图片/emoji图标 -->
-                    </div>
+                    <n-icon class="emoji-btn" size="26" color="#666" @click="showEmojiSelector = !showEmojiSelector">
+                        <happy-outline />
+                    </n-icon>
                     <n-button type="primary" :loading="sendLoading" @click="sendMsg">发送</n-button>
                 </div>
             </div>
@@ -49,14 +49,18 @@
 </template>
 
 <script lang="ts">
+import "@/components/Emoji/emoji.css";
 import { Base64 } from 'js-base64';
 import { useRoute } from 'vue-router';
 import storage from '@/utils/stored-data';
+import { analyzeEmoji } from '@/components/Emoji/ts/emoji-conversion';
+import { HappyOutline } from '@vicons/ionicons5';
 import { MsgSocketURL } from '@/utils/request';
 import { getUserInfoByIDAPI } from '@/api/user';
 import { getMsgListAPI, getMsgDetailsAPI, readMsgAPI, sendMsgAPI } from '@/api/message';
+import EmojiSelector from '@/components/Emoji/components/EmojiSelector.vue';
 import CommonAvatar from '@/components/CommonAvatar.vue';
-import { NInput, NButton, NTime, useNotification } from 'naive-ui';
+import { NInput, NIcon, NButton, NTime, useNotification } from 'naive-ui';
 import { onBeforeMount, onBeforeUnmount, reactive, ref, computed, nextTick, defineComponent } from 'vue';
 import { messageListType, messageDetailsType } from '@/types/message';
 
@@ -178,6 +182,7 @@ export default defineComponent({
 
         //到达底部
         const toBottom = () => {
+            console.log('msgBox.value',msgBox.value)
             if (allowToBottom.value) {
                 msgBox.value!.scrollTop = msgBox.value!.scrollHeight;
             } else {
@@ -220,6 +225,13 @@ export default defineComponent({
                 });
 
             });
+        }
+
+        //emoji
+        const showEmojiSelector = ref(false);//显示emoji选择器
+        const chooseEmoji = (value: string) => {
+            msgForm.content += "[" + value + "]";
+            showEmojiSelector.value = false;
         }
 
         //websocket
@@ -285,21 +297,27 @@ export default defineComponent({
             targetUser,
             msgForm,
             sendLoading,
+            showEmojiSelector,
             sendMsg,
-            getMsgContent
+            chooseEmoji,
+            getMsgContent,
+            analyzeEmoji
         }
     },
     components: {
         NTime,
+        NIcon,
         NInput,
         NButton,
+        HappyOutline,
+        EmojiSelector,
         CommonAvatar
     }
 });
 </script>
 
 <style lang="less" scoped>
-// @import url("@/components/Emoji/emoji.css");
+
 .msg {
     display: flex;
     height: 656px;
@@ -439,6 +457,12 @@ export default defineComponent({
 
 .msg-input {
     padding: 10px;
+    position: relative;
+
+    .choose-emoji {
+        position: absolute;
+        top: -80px;
+    }
 
     .btn-box {
         height: 50px;
@@ -446,6 +470,10 @@ export default defineComponent({
         margin-left: 10px;
         align-items: center;
         justify-content: space-between;
+
+        .emoji-btn {
+            cursor: pointer;
+        }
 
         button {
             width: 100px;
