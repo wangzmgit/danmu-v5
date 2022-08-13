@@ -5,8 +5,8 @@
             @ended="videoEnd" />
         <!-- 控制栏 -->
         <div v-show="showControl" class="control">
-            <control ref="controlRef" @playChange="setPlayState" @resChange="setRes"
-                @full="fullScreen" @progressChange="setProgress" @volumeChange="setVolume" @speedChange="setSpeed" />
+            <control ref="controlRef" @playChange="setPlayState" @resChange="setRes" @full="fullScreen"
+                @progressChange="setProgress" @volumeChange="setVolume" @speedChange="setSpeed" />
         </div>
         <!-- 弹幕容器 -->
         <danmaku id="danmaku" ref="danmakuRef" v-if="showDanmaku" :list="danmakuList"></danmaku>
@@ -17,7 +17,7 @@
     </div>
     <!-- 发送弹幕 -->
     <send-danmaku :show="playerConfig.danmaku" :amount="amount" @changeShow="changeShowDanmaku" @showMsg="changeMsg"
-        @send="sendDanmaku" @setOpacity="setOpacity">
+        @send="sendDanmaku" @setOpacity="setOpacity" @changeDisableType="changeDisableType">
     </send-danmaku>
 </template>
 
@@ -167,6 +167,12 @@ export default defineComponent({
             danmakuRef.value.setOpacity(opacity);
         }
 
+        //设置屏蔽弹幕类型
+        const changeDisableType = (types: object) => {
+            setConfig('disableType', types);
+            danmakuRef.value.updateDisableType();
+        }
+
         //设置弹幕显示
         const changeShowDanmaku = (val: boolean) => {
             if (!val) {
@@ -307,6 +313,7 @@ export default defineComponent({
             showDanmaku,
             setOpacity,
             sendDanmaku,
+            changeDisableType,
             changeShowDanmaku,
             //右键菜单
             menuRef,

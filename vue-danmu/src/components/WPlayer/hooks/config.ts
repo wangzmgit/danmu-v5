@@ -19,6 +19,12 @@ export default function useConfig() {
             defaultRes: 720,//默认分辨率
             danmaku: true,
             volume: 80,
+            disableType: {
+                row: false,
+                top: false,
+                bottom: false,
+                color: false
+            }
         }
         localStorage.setItem("player-config", JSON.stringify(config));
         return config;

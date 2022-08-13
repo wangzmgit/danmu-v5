@@ -3,7 +3,8 @@
 </template>
 
 <script lang="ts">
-import { ref, reactive, defineComponent } from "vue";
+import useConfig from '../hooks/config';
+import { ref, reactive, defineComponent, onMounted } from "vue";
 import { danmakuItemType, drawDanmakuType } from "../types/danmaku";
 
 export default defineComponent({
@@ -13,6 +14,9 @@ export default defineComponent({
     }
   },
   setup(props) {
+    const { getConfig } = useConfig();
+    const disableType = reactive<Array<string>>([]);
+
     const danmakuRef = ref<HTMLElement | null>(null);
     const paused = ref(false);//是否暂停
     const danmaku = ref<HTMLElement[]>([]);//当前弹幕
@@ -21,7 +25,7 @@ export default defineComponent({
       row: [] as Array<number>, //轨道结束的时间
       top: [] as Array<number>,
       bottom: [] as Array<number>,
-    })
+    });
 
     // 播放暂停
     const startOrPause = (start: boolean) => {
@@ -135,7 +139,28 @@ export default defineComponent({
       return Math.round(Math.random() * tunnel);
     }
 
+    //获取弹幕类型信息
+    const danmakuTypeText = ["row", "top", "botton"];
+    const isDisableType = (draw: drawDanmakuType) => {
+      if (disableType.includes(danmakuTypeText[draw.type])) return true;
+      if (disableType.includes("color") && (draw.color !== '#fff' && draw.color !== '#ffffff')) return true;
+      return false;
+    }
+
+    //更新屏蔽弹幕类型
+    const updateDisableType = () => {
+      let disableTypeObj = getConfig().disableType;
+      for (let item in disableTypeObj) {
+        if (disableTypeObj[item]) {
+          disableType.push(item);
+        }
+      }
+    }
+
     const drawDanmaku = (draw: drawDanmakuType, send: boolean) => {
+      //过滤屏蔽弹幕
+      if (isDisableType(draw)) return;
+      console.log(isDisableType(draw))
       let width = danmakuRef.value!.offsetWidth;
       var item = document.createElement("span");
       var content = document.createTextNode(draw.text);
@@ -189,13 +214,18 @@ export default defineComponent({
       }
     }
 
+    onMounted(() => {
+      updateDisableType();
+    })
+
     return {
       danmakuRef,
       startOrPause,
       clearDanmaku,
       timeUpdate,
       drawDanmaku,
-      setOpacity
+      setOpacity,
+      updateDisableType
     }
   }
 });
@@ -235,7 +265,7 @@ export default defineComponent({
 
 @keyframes danmaku {
   from {
-    transform: translateX(100%);
+    transform: none;
   }
 }
 

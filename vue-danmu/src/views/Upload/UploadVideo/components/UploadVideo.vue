@@ -40,7 +40,8 @@ import { baseResourceType, reviewResourceType } from "@/types/resource";
 export default defineComponent({
     props: {
         vid: {
-            type: Number
+            type: Number,
+            required: true
         }
     },
     setup(props) {

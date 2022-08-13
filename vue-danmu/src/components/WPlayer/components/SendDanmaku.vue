@@ -24,11 +24,18 @@
       </div>
       <p class="danmaku-menu-title">弹幕类型</p>
       <div class="danmaku-type">
-        <ul class="type-switch">
-          <li class="type-item" :class="{ 'active': danmakuForm.type === 0 }" @click="setType(0)">滚动</li>
-          <li class="type-item" :class="{ 'active': danmakuForm.type === 1 }" @click="setType(1)">顶部</li>
-          <li class="type-item" :class="{ 'active': danmakuForm.type === 2 }" @click="setType(2)">底部</li>
+        <ul class="type-switch" @click="setType">
+          <li class="type-item" name="0" :class="{ 'active': danmakuForm.type === 0 }">滚动</li>
+          <li class="type-item" name="1" :class="{ 'active': danmakuForm.type === 1 }">顶部</li>
+          <li class="type-item" name="2" :class="{ 'active': danmakuForm.type === 2 }">底部</li>
         </ul>
+      </div>
+      <p class="danmaku-menu-title">屏蔽弹幕类型</p>
+      <div class="danmaku-filter" @click="setDisableType">
+        <svg-icon name="row" class="filter-item" :icon="`row${disableType.row ? 'Close' : 'Open'}`"></svg-icon>
+        <svg-icon name="top" class="filter-item" :icon="`top${disableType.top ? 'Close' : 'Open'}`"></svg-icon>
+        <svg-icon name="bottom" class="filter-item" :icon="`bottom${disableType.bottom ? 'Close' : 'Open'}`"></svg-icon>
+        <svg-icon name="color" class="filter-item" :icon="`color${disableType.color ? 'Close' : 'Open'}`"></svg-icon>
       </div>
       <p class="danmaku-menu-title">弹幕不透明度</p>
       <w-slider class="opacity" :value="opacity" @changeValue="setOpacity" />
@@ -44,12 +51,15 @@
 <script lang="ts">
 import { ref, reactive, defineComponent } from "vue";
 import WSlider from "./WSlider.vue";
+import useConfig from '../hooks/config';
 import WSwitch from "../components/WSwitch.vue";
 import SvgIcon from "../components/SvgIcon.vue";
 import WButton from "../components/WButton.vue";
 import { danmakuType } from "../types/danmaku";
+
+
 export default defineComponent({
-  emits: ['setOpacity', 'changeShow', 'showMsg', 'send'],
+  emits: ['setOpacity', 'changeShow', 'showMsg', 'send', 'changeDisableType'],
   props: {
     amount: {
       type: Number,
@@ -69,12 +79,14 @@ export default defineComponent({
       type: 0,
       part: 1,
     });
+    const { getConfig } = useConfig();
     const danmaku = ref(props.show);
     const showMenu = ref(false);
     const opacity = ref(100);
+    const disableType = reactive(getConfig().disableType);
 
-    const setType = (type: number) => {
-      danmakuForm.type = type;
+    const setType = (e: Event) => {
+      danmakuForm.type = parseInt((e.target as HTMLElement).getAttribute('name')!);
     }
 
     //设置弹幕不透明度
@@ -91,6 +103,30 @@ export default defineComponent({
     const setShow = (val: boolean) => {
       danmaku.value = val;
       ctx.emit('changeShow', val);
+    }
+
+    //设置屏蔽弹幕类型
+    const setDisableType = (e: Event) => {
+      const eElement = e.target as HTMLElement;
+      if (eElement.className === 'filter-item') {
+        switch (eElement.getAttribute("name")) {
+          case 'row':
+            disableType.row = !disableType.row;
+            break;
+          case 'top':
+            disableType.top = !disableType.top;
+            break;
+          case 'bottom':
+            disableType.bottom = !disableType.bottom;
+            break;
+          case 'color':
+            disableType.color = !disableType.color;
+            break;
+          default:
+            break;
+        }
+      }
+      ctx.emit('changeDisableType', { ...disableType });
     }
 
     //发送弹幕
@@ -113,11 +149,13 @@ export default defineComponent({
       danmaku,
       showMenu,
       opacity,
+      disableType,
       danmakuForm,
       setShow,
       setType,
       setOpacity,
       setColor,
+      setDisableType,
       sendDanmaku
     }
   },
@@ -126,7 +164,6 @@ export default defineComponent({
     WSwitch,
     SvgIcon,
     WButton,
-
   },
 });
 </script>
@@ -188,8 +225,8 @@ export default defineComponent({
   z-index: 20;
   bottom: 40px;
   background: rgba(12, 12, 12, 0.8);
-  width: 240px;
-  height: 240px;
+  width: 250px;
+  height: 300px;
 
   .danmaku-menu-top {
     display: flex;
@@ -200,7 +237,7 @@ export default defineComponent({
 
   .danmaku-menu-title {
     color: #fff;
-    margin: 12px 0 12px 10px;
+    margin: 8px 0 8px 10px;
   }
 
   .customize-color {
@@ -229,13 +266,15 @@ export default defineComponent({
   }
 
   .color-btn {
+    width: calc(100% - 20px);
+    margin-left: 10px;
     display: flex;
     flex-wrap: nowrap;
+    justify-content: space-around;
 
     div {
       width: 30px;
       height: 30px;
-      margin: 0 0 5px 8px;
       border-radius: 50%;
       cursor: pointer;
 
@@ -268,35 +307,48 @@ export default defineComponent({
   /**切换弹幕类型 */
   .danmaku-type {
     margin-left: 16px;
+
+    .type-switch {
+      padding: 0;
+      margin: 0;
+      display: flex;
+      list-style: none;
+      width: 218px;
+      border: 1px solid #fff;
+      border-radius: 6px;
+      overflow: hidden;
+
+      .type-item {
+        flex: 1;
+        color: #fff;
+        padding: 10px;
+        text-align: center;
+        padding: 6px 6px;
+      }
+
+      .active {
+        transition: all .3s;
+        background-color: #18a058;
+      }
+    }
   }
 
-  .type-switch {
-    padding: 0;
-    margin: 0;
-    display: flex;
-    list-style: none;
-    width: 200px;
-    border: 1px solid #fff;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  .type-item {
-    flex: 1;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-    padding: 6px 6px;
-  }
-
-  .active {
-    transition: all .3s;
-    background-color: #18a058;
-  }
-
+  /**不透明度 */
   .opacity {
     width: 90% !important;
     margin: 0 auto;
+  }
+
+  /**弹幕屏蔽 */
+  .danmaku-filter {
+    display: flex;
+    justify-content: space-around;
+
+    .filter-item {
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+    }
   }
 }
 </style>
