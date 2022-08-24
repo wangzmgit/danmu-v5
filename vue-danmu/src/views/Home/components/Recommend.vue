@@ -66,12 +66,13 @@ export default defineComponent({
     width: 100%;
     height: 280px;
     display: grid;
+    row-gap: 10px;
+    column-gap: 10px;
     grid-template-rows: repeat(2, 50%);
     grid-template-columns: repeat(3, 33.3%);
 
     .v-card {
-        padding: 5px;
-        height: 130px;
+        height: 140px;
         width: calc(100% - 10px);
 
         .cover {

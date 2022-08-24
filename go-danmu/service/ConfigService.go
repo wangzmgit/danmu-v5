@@ -75,7 +75,7 @@ func getFFmpegStatus() string {
 	}
 
 	version := out.String()
-	pattern := `version (([0-9]|\.)*)`
+	pattern := `version ((n?[0-9]|\.)*)`
 	reg := regexp.MustCompile(pattern)
 	return reg.FindStringSubmatch(version)[1]
 }

@@ -235,7 +235,7 @@ export default defineComponent({
 
 @keyframes danmaku {
   from {
-    transform: translateX(100%);
+    transform: none;
   }
 }
 

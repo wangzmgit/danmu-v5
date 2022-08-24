@@ -185,7 +185,7 @@ func getUploadVideoUrls(dirName string, maxRes int) dto.ResDto {
 func getUrl() string {
 	protocol := "http://"
 	if viper.GetBool("file.https") {
-		return "https://"
+		protocol = "https://"
 	}
 	if viper.GetBool("file.oss") {
 		if len(viper.GetString("file.domain")) == 0 {
