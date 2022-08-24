@@ -1,10 +1,21 @@
 export default function useConfig() {
+    const configItems = ["defaultRes", "danmaku", "volume", "disableType"];
     const getConfig = () => {
         const config = localStorage.getItem("player-config");
         if (!config) {
             return initConfig();
         }
-        return JSON.parse(config);
+
+        const objConfig = JSON.parse(config);
+        // 检查配置项是否存在
+        const configKeys = Object.keys(objConfig);
+        for (const item of configItems) {
+            if (!configKeys.includes(item)) {
+                initConfig();
+            }
+        }
+        
+        return objConfig;
     }
 
     const setConfig = (key: string, value: any) => {

@@ -14,8 +14,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const { getConfig } = useConfig();
-    const disableType = reactive<Array<string>>([]);
 
     const danmakuRef = ref<HTMLElement | null>(null);
     const paused = ref(false);//是否暂停
@@ -140,6 +138,8 @@ export default defineComponent({
     }
 
     //获取弹幕类型信息
+    const { getConfig } = useConfig();
+    const disableType = reactive<Array<string>>([]);
     const danmakuTypeText = ["row", "top", "botton"];
     const isDisableType = (draw: drawDanmakuType) => {
       if (disableType.includes(danmakuTypeText[draw.type])) return true;
