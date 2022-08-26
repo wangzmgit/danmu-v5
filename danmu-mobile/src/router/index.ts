@@ -82,10 +82,10 @@ const router = createRouter({
   routes
 });
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   //是否需要登录
-  if (to.meta.auth && !storage.get('token')) {
-    router.push({ name: 'Login' });
+  if (to.meta.auth && !storage.get('access_token') && !storage.get('refresh_token')) {
+      router.push({ name: 'Home', params: { login: 'true' } });
   }
 })
 

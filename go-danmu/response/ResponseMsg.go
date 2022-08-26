@@ -15,6 +15,10 @@ const (
 	PageOrSizeError        = "页码或请求数量错误"
 	TooManyRequests        = "请求数量过多"
 
+	//token相关
+	TokenExpried = "token过期"
+	Unauthorized = "权限不足"
+
 	//用户相关
 	NickCheck             = "昵称不能为空"
 	NameExist             = "用户名已存在"

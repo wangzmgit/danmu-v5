@@ -99,7 +99,7 @@ func getWebInfo() vo.FEInfoVo {
 	var feInfo vo.FEInfoVo
 	infoFile, err := os.Open(viper.GetString("server.fe_path") + "/info.json")
 	if err != nil {
-		println(err.Error())
+		// println(err.Error())
 		return feInfo
 	}
 	defer infoFile.Close()

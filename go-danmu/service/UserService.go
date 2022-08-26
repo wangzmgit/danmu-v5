@@ -90,7 +90,7 @@ func LoginService(login dto.LoginDto, userIP string) response.ResponseStruct {
 		return res
 	}
 	//发放token
-	token, err := common.ReleaseToken(user)
+	refreshToken, accessToken, err := common.ReleaseToken(user)
 	if err != nil {
 		res.HttpStatus = http.StatusInternalServerError
 		res.Code = response.ServerErrorCode
@@ -100,7 +100,7 @@ func LoginService(login dto.LoginDto, userIP string) response.ResponseStruct {
 	}
 	util.LogInfo("token issued successfully uid " + strconv.Itoa(int(user.ID)) + " | " + userIP)
 	//返回数据
-	res.Data = gin.H{"token": token, "user": vo.ToUserVo(user)}
+	res.Data = gin.H{"refresh_token": refreshToken, "access_token": accessToken, "user": vo.ToUserVo(user)}
 	return res
 }
 
@@ -125,7 +125,7 @@ func RootLoginService(login dto.LoginDto, userIP string) response.ResponseStruct
 			Role:  common.Root,
 		}
 		//发放token
-		token, err := common.ReleaseToken(rootInfo)
+		refreshToken, accessToken, err := common.ReleaseToken(rootInfo)
 		if err != nil {
 			res.HttpStatus = http.StatusInternalServerError
 			res.Code = response.ServerErrorCode
@@ -136,7 +136,7 @@ func RootLoginService(login dto.LoginDto, userIP string) response.ResponseStruct
 		util.LogInfo("token issued successfully root  | " + userIP)
 
 		//返回数据
-		res.Data = gin.H{"token": token, "user": vo.ToUserVo(rootInfo)}
+		res.Data = gin.H{"refresh_token": refreshToken, "access_token": accessToken, "user": vo.ToUserVo(rootInfo)}
 		return res
 	}
 

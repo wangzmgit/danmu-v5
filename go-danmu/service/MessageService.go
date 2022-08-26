@@ -145,7 +145,7 @@ func AnalysisToken(tokenString string) (bool, uint) {
 		return false, uint(0)
 	}
 
-	token, claims, err := common.ParseUserToken(tokenString)
+	token, claims, err, _ := common.ParseUserToken(tokenString, common.AccessTypeToken)
 	if err != nil || !token.Valid {
 		return false, uint(0)
 	}

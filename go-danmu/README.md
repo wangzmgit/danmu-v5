@@ -23,7 +23,9 @@ register:
   verify_email: false
 server:
   fe_path: 前端文件目录
-  jwt_secret: jwt秘钥(随便写点字母数字)
+  jwt_secret: jwt秘钥(5.1.0版本之后可以不填写)
+  refresh_jwt_secret: jwt秘钥(随便写点字母数字)
+  access_jwt_secret: jwt秘钥(随便写点字母数字)
   port: 9100
 transcoding:
   max_res: 0

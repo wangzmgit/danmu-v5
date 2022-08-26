@@ -75,7 +75,8 @@ export default defineComponent({
             loginAPI(loginForm).then((res) => {
                 if (res.data.code === 2000) {
                     if (res.data.data.user.role in [1, 2, 3]) {
-                        storage.set("admin", res.data.data.token, 14 * 24 * 60);
+                        storage.set("admin_access_token", res.data.data.access_token, 5);
+                        storage.set("admin_refresh_token", res.data.data.refresh_token, 14 * 24 * 60);
                         storage.set('adminInfo', res.data.data.user, 14 * 24 * 60);
                         router.push({ name: "Home" });
                     } else {
@@ -97,7 +98,8 @@ export default defineComponent({
         const rootLogin = () => {
             rootLoginAPI(loginForm).then((res) => {
                 if (res.data.code === 2000) {
-                    storage.set("admin", res.data.data.token, 14 * 24 * 60);
+                    storage.set("admin_access_token", res.data.data.access_token, 5);
+                    storage.set("admin_refresh_token", res.data.data.refresh_token, 14 * 24 * 60);
                     storage.set('adminInfo', res.data.data.user, 14 * 24 * 60);
                     router.push({ name: "Home" });
                 }

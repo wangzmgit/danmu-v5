@@ -21,7 +21,7 @@ func UidMiddleware() gin.HandlerFunc {
 		}
 
 		tokenString = tokenString[7:]
-		token, claims, err := common.ParseUserToken(tokenString)
+		token, claims, err, _ := common.ParseUserToken(tokenString, common.AccessTypeToken)
 		if err != nil || !token.Valid {
 			ctx.Set("uid", uint(0))
 			return

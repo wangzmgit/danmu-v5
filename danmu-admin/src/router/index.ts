@@ -85,7 +85,7 @@ const router = createRouter({
 
 router.beforeEach((to, from) => {
     //是否需要登录
-    if (to.meta.admin && !storage.get('admin')) {
+    if (to.meta.admin && !storage.get('admin_access_token') && !storage.get('admin_refresh_token')) {
         router.push({ name: 'Login' });
     }
 })

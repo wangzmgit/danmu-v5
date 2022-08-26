@@ -51,7 +51,8 @@ export default defineComponent({
                 if (!errors) {
                     loginAPI(loginForm).then((res) => {
                         if (res.data.code === 2000) {
-                            storage.set("token", res.data.data.token, 14 * 24 * 60);
+                            storage.set("access_token", res.data.data.access_token, 5);
+                            storage.set("refresh_token", res.data.data.refresh_token, 14 * 24 * 60);
                             storage.set('userInfo', res.data.data.user, 14 * 24 * 60);
                             store.setLoginState(true);
                             ctx.emit('close');

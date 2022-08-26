@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"kuukaa.fun/danmu-v5/common"
 	"kuukaa.fun/danmu-v5/model"
+	"kuukaa.fun/danmu-v5/response"
 )
 
 /*********************************************************
@@ -15,20 +16,23 @@ import (
 **********************************************************/
 func AuthMiddleware(role int) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		//获取Authorization，header
-		tokenString := ctx.GetHeader("Authorization")
-		if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-			//抛弃请求
-			ctx.Abort()
-			return
+		res := response.ResponseStruct{
+			HttpStatus: http.StatusUnauthorized,
+			Code:       response.UnauthorizedCode,
+			Data:       nil,
+			Msg:        response.Unauthorized,
 		}
 
-		tokenString = tokenString[7:]
-		token, claims, err := common.ParseUserToken(tokenString)
-		if err != nil || !token.Valid {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
-			//抛弃请求
+		//获取Authorization，header
+		tokenString := ctx.GetHeader("Authorization")
+		parseSuccess, claims, isExpired := parseTokenString(tokenString, common.AccessTypeToken)
+		if !parseSuccess {
+			if isExpired {
+				//如果是token过期
+				res.Msg = response.TokenExpried
+				res.Code = response.TokenExpriedCode
+			}
+			response.HandleResponse(ctx, res)
 			ctx.Abort()
 			return
 		}
@@ -39,7 +43,7 @@ func AuthMiddleware(role int) gin.HandlerFunc {
 		if claims.Role != common.Root {
 			DB := common.GetDB()
 			if err := DB.First(&user, userId).Error; err != nil || user.ID == 0 {
-				ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "请先登录"})
+				response.HandleResponse(ctx, res)
 				//抛弃请求
 				ctx.Abort()
 				return
@@ -48,7 +52,7 @@ func AuthMiddleware(role int) gin.HandlerFunc {
 
 		//如果用户存在，比对目标权限
 		if claims.Role < role {
-			ctx.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "权限不足"})
+			response.HandleResponse(ctx, res)
 			//抛弃请求
 			ctx.Abort()
 			return
@@ -61,4 +65,73 @@ func AuthMiddleware(role int) gin.HandlerFunc {
 		ctx.Set("role", claims.Role)
 		ctx.Next()
 	}
+}
+
+/*********************************************************
+** 函数功能: 验证refreshToken
+** 日    期: 2022年8月25日15:08:49
+**********************************************************/
+func RefreshTokenMiddleware() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		res := response.ResponseStruct{
+			HttpStatus: http.StatusUnauthorized,
+			Code:       response.UnauthorizedCode,
+			Data:       nil,
+			Msg:        response.Unauthorized,
+		}
+
+		//获取Authorization，header
+		tokenString := ctx.GetHeader("Authorization")
+		parseSuccess, claims, isExpired := parseTokenString(tokenString, common.RefreshTypeToken)
+		if !parseSuccess {
+			if isExpired {
+				//如果是token过期
+				res.Msg = response.TokenExpried
+				res.Code = response.TokenExpriedCode
+			}
+			response.HandleResponse(ctx, res)
+			ctx.Abort()
+			return
+		}
+
+		//验证用户是否存在
+		userId := claims.UserId
+		var user model.User
+		if claims.Role != common.Root {
+			DB := common.GetDB()
+			if err := DB.First(&user, userId).Error; err != nil || user.ID == 0 {
+				response.HandleResponse(ctx, res)
+				//抛弃请求
+				ctx.Abort()
+				return
+			}
+		}
+
+		//将用户信息写入上下文
+		ctx.Set("user", user)
+		ctx.Set("role", claims.Role)
+		ctx.Next()
+	}
+}
+
+/*********************************************************
+** 函数功能: 解析token字符串
+** 日    期: 2022年8月25日15:12:28
+**********************************************************/
+func parseTokenString(tokenString, tokenType string) (bool, *common.Claims, bool) {
+	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer") {
+		return false, nil, false
+	}
+
+	tokenString = tokenString[7:]
+	token, claims, err, isExpired := common.ParseUserToken(tokenString, tokenType)
+	if err != nil || !token.Valid {
+		return false, nil, isExpired
+	}
+
+	if tokenType != claims.Subject {
+		return false, nil, isExpired
+	}
+
+	return true, claims, isExpired
 }

@@ -16,6 +16,8 @@ func GetUserRoutes(route *gin.RouterGroup) {
 		user.POST("/register/code", controller.SendRegisterCode) //发送注册验证码
 		user.POST("/login", controller.Login)                    //用户登录
 		user.POST("/root/login", controller.RootLogin)           //超级管理员登录
+		// 通过RefreshToken获取AccessToken
+		user.GET("/token/refresh", middleware.RefreshTokenMiddleware(), controller.GetAccessToken)
 
 		//需要用户登录
 		userAuth := user.Group("")

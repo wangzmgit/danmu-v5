@@ -271,3 +271,18 @@ func AdminDeleteUser(ctx *gin.Context) {
 	res := service.AdminDeleteUserService(request.ID)
 	response.HandleResponse(ctx, res)
 }
+
+/*********************************************************
+** 函数功能: 获取accessToken
+** 日    期: 2022年8月25日15:42:03
+**********************************************************/
+func GetAccessToken(ctx *gin.Context) {
+	user, exist := ctx.Get("user")
+	if exist {
+		token, _ := common.ReleaseAccessToken(user.(model.User))
+		response.Success(ctx, gin.H{"token": token}, response.OK)
+		return
+	}
+
+	response.Fail(ctx, nil, response.RequestError)
+}

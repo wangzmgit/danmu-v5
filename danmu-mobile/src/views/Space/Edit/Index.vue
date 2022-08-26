@@ -5,8 +5,7 @@
             <tr>
                 <td>头像</td>
                 <td>
-                    <a-avatar v-if="userInfo.avatar" :size="50" :src="userInfo.avatar" />
-                    <a-avatar v-else :size="80" icon="user" />
+                    <common-avatar :size="50" :src="userInfo.avatar"></common-avatar>
                 </td>
             </tr>
             <tr>
@@ -24,7 +23,7 @@
             <tr>
                 <td>出生日期</td>
                 <td>
-                    <n-time :time="new Date(userInfo.birthday)"></n-time>
+                    <n-time :time="new Date(userInfo.birthday || 0)"></n-time>
                 </td>
             </tr>
             <tr>
@@ -46,6 +45,7 @@ import { userInfoType } from "@/types/user";
 import { defineComponent, computed } from "vue";
 import { useRouter } from "vue-router";
 import { NTime } from "naive-ui";
+import CommonAvatar from "@/components/CommonAvatar.vue";
 
 export default defineComponent({
     setup() {
@@ -66,7 +66,7 @@ export default defineComponent({
             router.push({ name: "Home" });
         }
 
-        const toGender = (gender: number) => {
+        const toGender = (gender: number | undefined) => {
             if (gender == 1) return "男";
             else if (gender == 2) return "女";
             else return "未知";
@@ -80,9 +80,10 @@ export default defineComponent({
         }
     },
     components: {
-        NTime,
-        HeaderBar,
-    }
+    NTime,
+    HeaderBar,
+    CommonAvatar
+}
 });
 </script>
 
