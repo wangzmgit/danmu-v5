@@ -57,6 +57,7 @@ import {
 } from 'naive-ui';
 import { AvatarUrl as avatarUrl } from '@/utils/request';
 import { modifyUserInfoAPI, getUserInfoAPI } from "@/api/user";
+import { getAccessToken } from "@/api/token";
 
 export default defineComponent({
 
@@ -74,7 +75,7 @@ export default defineComponent({
 
         //文件上传请求头
         const headers = {
-            Authorization: "Bearer " + storage.get("token"),
+            Authorization: `Bearer ${storage.get('access_token')}`,
         }
 
         const mask = ref(false);//上传头像遮罩
@@ -172,6 +173,16 @@ export default defineComponent({
             })
         }
 
+        // 刷新token
+        const refreshToken = () => {
+            getAccessToken().then((res) => {
+                if (res.data.code === 2000) {
+                    headers.Authorization = `Bearer ${res.data.data.token}`;
+                    storage.set("access_token", res.data.data.token, 5);
+                }
+            })
+        }
+
         onBeforeMount(() => {
             const info = storage.get('userInfo');
             userInfo.uid = info.uid;
@@ -180,6 +191,11 @@ export default defineComponent({
             userInfo.avatar = info.avatar;
             userInfo.gender = info.gender.toString();
             userInfo.birthday = Date.parse(info.birthday);
+            // 先执行一次刷新token，每经过三分钟再执行一次
+            refreshToken();
+            setInterval(() => {
+                refreshToken();
+            }, 180000);//3 * 60 * 1000 = 3分钟
         })
 
         return {

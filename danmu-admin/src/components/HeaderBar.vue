@@ -38,7 +38,8 @@ export default defineComponent({
         const router = useRouter();
 
         const logout = () => {
-            storage.remove('admin');
+            storage.remove("admin_refresh_token");
+            storage.remove("admin_access_token");
             storage.remove('adminInfo');
             router.push({ name: 'Login' });
         }

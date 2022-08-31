@@ -26,7 +26,8 @@
 <script lang="ts">
 import config from "@/config";
 import storage from "@/utils/stored-data";
-import { defineComponent, ref } from "vue";
+import { getAccessToken } from "@/api/token";
+import { defineComponent, onBeforeMount, ref } from "vue";
 import { CarouselUrl as carouselUrl } from "@/utils/request";
 import { ArchiveOutline as ArchiveIcon } from "@vicons/ionicons5";
 import { NIcon, NUpload, NUploadDragger, NText, NP, NProgress, useNotification } from 'naive-ui';
@@ -42,7 +43,7 @@ export default defineComponent({
         const cover = ref(props.cover);
         //文件上传请求头
         const headers = {
-            Authorization: "Bearer " + storage.get("admin"),
+            Authorization: "Bearer " + storage.get("admin_access_token"),
         }
         const percent = ref(0);//上传百分比
         const uploading = ref(false);//是否上传中
@@ -96,6 +97,24 @@ export default defineComponent({
                 percent.value = Math.floor((event.loaded / event.total) * 100);
             }
         }
+
+        // 刷新token
+        const refreshToken = () => {
+            getAccessToken().then((res) => {
+                if (res.data.code === 2000) {
+                    headers.Authorization = `Bearer ${res.data.data.token}`;
+                    storage.set("admin_access_token", res.data.data.token, 5);
+                }
+            })
+        }
+
+        onBeforeMount(() => {
+            // 先执行一次刷新token，每经过三分钟再执行一次
+            refreshToken();
+            setInterval(() => {
+                refreshToken();
+            }, 180000);//3 * 60 * 1000 = 3分钟
+        })
 
         return {
             cover,

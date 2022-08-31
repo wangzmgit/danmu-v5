@@ -53,6 +53,7 @@ import "@/components/Emoji/emoji.css";
 import { Base64 } from 'js-base64';
 import { useRoute } from 'vue-router';
 import storage from '@/utils/stored-data';
+import { getAccessToken } from "@/api/token";
 import { analyzeEmoji } from '@/components/Emoji/ts/emoji-conversion';
 import { HappyOutline } from '@vicons/ionicons5';
 import { MsgSocketURL } from '@/utils/request';
@@ -182,7 +183,6 @@ export default defineComponent({
 
         //到达底部
         const toBottom = () => {
-            console.log('msgBox.value',msgBox.value)
             if (allowToBottom.value) {
                 msgBox.value!.scrollTop = msgBox.value!.scrollHeight;
             } else {
@@ -247,7 +247,7 @@ export default defineComponent({
                 let reg = new RegExp('^http(s)?:')
                 SocketURL.value = MsgSocketURL.replace(reg, wsProtocol);
             }
-            SocketURL.value += "?token=" + storage.get("token");
+            SocketURL.value += "?token=" + storage.get("access_token");
             websocket.value = new WebSocket(SocketURL.value);
             websocket.value.onmessage = websocketOnmessage;
         }
@@ -271,6 +271,15 @@ export default defineComponent({
             }
         }
 
+        const refreshToken = () => {
+            getAccessToken().then((res) => {
+                if (res.data.code === 2000) {
+                    storage.set("access_token", res.data.data.token, 5);
+                    initWebSocket();
+                }
+            })
+        }
+
         //加载和卸载页面
         const route = useRoute();
         onBeforeMount(() => {
@@ -278,7 +287,7 @@ export default defineComponent({
                 msgForm.fid = Number(route.params.fid);
             }
             getMsgList();
-            initWebSocket();
+            refreshToken();
             window.addEventListener('scroll', lazyLoading, true);
         })
 

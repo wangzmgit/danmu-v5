@@ -61,7 +61,8 @@ export default defineComponent({
 
         const logout = () => {
             //清除token和用户信息并刷新页面
-            storage.remove("token");
+            storage.remove("refresh_token");
+            storage.remove("access_token");
             storage.remove("userInfo");
             router.push({ name: "Home" });
         }

@@ -95,7 +95,8 @@ export default defineComponent({
         }
 
         const logout = () => {
-            storage.remove('token');
+            storage.remove("refresh_token");
+            storage.remove("access_token");
             storage.remove('userInfo');
             loginStore.setLoginState(false);
         }

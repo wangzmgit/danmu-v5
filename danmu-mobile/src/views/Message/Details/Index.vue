@@ -37,6 +37,7 @@
 <script lang="ts">
 import { Base64 } from 'js-base64';
 import storage from '@/utils/stored-data';
+import { getAccessToken } from "@/api/token";
 import { MsgSocketURL } from '@/utils/request';
 import { useRoute, useRouter } from 'vue-router';
 import { getMsgDetailsAPI, sendMsgAPI } from '@/api/message';
@@ -157,7 +158,7 @@ export default defineComponent({
                 let reg = new RegExp('^http(s)?:')
                 SocketURL.value = MsgSocketURL.replace(reg, wsProtocol);
             }
-            SocketURL.value += "?token=" + storage.get("token");
+            SocketURL.value += "?token=" + storage.get("access_token");
             websocket.value = new WebSocket(SocketURL.value);
             websocket.value.onmessage = websocketOnmessage;
         }
@@ -178,6 +179,16 @@ export default defineComponent({
             }
         }
 
+        // 刷新token并建立websocket连接
+        const refreshToken = () => {
+            getAccessToken().then((res) => {
+                if (res.data.code === 2000) {
+                    storage.set("access_token", res.data.data.token, 5);
+                    initWebSocket();
+                }
+            })
+        }
+
         //加载和卸载页面
         const route = useRoute();
         onBeforeMount(() => {
@@ -187,7 +198,8 @@ export default defineComponent({
                 targetUser.avatar = (route.query.avatar || "").toString();
             }
             getMsgContent(msgForm.fid);
-            initWebSocket();
+            //如果没有token则不建立websocket
+            refreshToken();
         })
 
         onBeforeUnmount(() => {
