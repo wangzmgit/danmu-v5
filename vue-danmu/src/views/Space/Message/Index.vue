@@ -135,7 +135,7 @@ export default defineComponent({
         const noMore = ref(false);//没有更多
         const allowToBottom = ref(true);//是否允许自动跳转到底部
         const targetUser = reactive({
-            name: "",
+            name: "消息内容",
             avatar: ""
         })
 
@@ -299,6 +299,7 @@ export default defineComponent({
         })
 
         return {
+            msgBox,
             userInfo,
             descSize,
             msgList,

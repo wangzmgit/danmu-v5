@@ -24,7 +24,7 @@ func GetMsgConnect(ctx *gin.Context) {
 	}
 	util.LogInfo("User " + strconv.Itoa(int(uid)) + " connection successful")
 	// 升级为websocket长链接
-	ws.WsMsgHandler(ctx.Writer, ctx.Request, uid)
+	ws.MsgWsHandler(ctx.Writer, ctx.Request, uid)
 }
 
 /*********************************************************

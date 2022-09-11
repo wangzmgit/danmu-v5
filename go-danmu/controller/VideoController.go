@@ -306,11 +306,11 @@ func AdminDeleteVideo(ctx *gin.Context) {
 ** 日    期: 2022年5月16日22:24:19
 **********************************************************/
 func GetRoomConnect(ctx *gin.Context) {
-	vid := ctx.Query("vid")
-	if util.StringToInt(vid) == 0 {
+	vid := util.StringToUint(ctx.Query("vid"))
+	if vid == 0 {
 		return
 	}
 
 	// 升级为websocket长链接
-	ws.WsHandler(ctx.Writer, ctx.Request, vid)
+	ws.RoomWsHandler(ctx.Writer, ctx.Request, vid)
 }
