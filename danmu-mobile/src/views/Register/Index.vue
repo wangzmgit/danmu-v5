@@ -94,7 +94,7 @@ export default defineComponent({
             disabledSend.value = true;
             sendRegisterCodeAPI(registerForm.email).then((res) => {
                 if (res.data.code === 2000) {
-                    if (res.data.data.code) {
+                    if (res.data?.data?.code) {
                         message.success(`验证码为：${res.data.data.code}`);
                     } else {
                         message.success('发送成功')

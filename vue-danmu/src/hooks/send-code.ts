@@ -13,17 +13,17 @@ export default function useSendCode() {
         disabledSend.value = true;
         sendRegisterCodeAPI(email).then((res) => {
             if (res.data.code === 2000) {
-                if (res.data.data.code) {
+                if (res.data?.data?.code) {
                     notification.success({
                         title: '发送成功',
                         content: "验证码为:" + res.data.data.code,
                         duration: 10000,
                     })
                 } else {
-                    notification.error({
+                    notification.success({
                         content: '发送成功',
                         duration: 5000,
-                    })
+                    });
                 }
 
                 //开启倒计时
@@ -43,7 +43,7 @@ export default function useSendCode() {
             sendBtnText.value = "发送验证码";
             notification.error({
                 title: '发送失败',
-                content: "原因:" + err.response.data.msg,
+                content: "原因:" + err.response?.data?.msg,
                 duration: 5000,
             });
         });
