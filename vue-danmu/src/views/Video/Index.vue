@@ -4,7 +4,7 @@
         <div class="video-main">
             <div class="content-left">
                 <div v-if="!loading" class="video-player">
-                    <w-player :key="part" :vid="videoInfo!.vid" :part="part" :resource="options" />
+                    <video-player :vid="vid" :part="part" :resources="resources"></video-player>
                     <div class="video-title-box">
                         <p class="video-title">{{ videoInfo!.title }}</p>
                         <p v-show="videoInfo!.copyright" class="copyright">
@@ -55,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import VideoPlayer from "./components/VideoPlayer.vue";
 import config from '@/config';
 import { statType } from '@/types/archive';
 import { useRoute, useRouter } from 'vue-router';
@@ -64,21 +65,18 @@ import { getVideoInfoAPI } from '@/api/video';
 import { BanSharp } from '@vicons/ionicons5';
 import { OnlineSocketURL } from '@/utils/request';
 import Comment from './components/Comment.vue';
-import WPlayer from '@/components/WPlayer/Index.vue';
 import PartList from './components/PartList.vue';
 import HeaderBar from '@/components/HeaderBar.vue';
 import AuthorCard from './components/AuthorCard.vue';
 import AuthorVideo from './components/AuthorVideo.vue';
 import ArchiveInfo from './components/ArchiveInfo.vue';
 import { videoType } from '@/types/video';
+
 export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
-        const options = reactive({
-            type: "hls",
-            data: {}
-        })
+        const vid = parseInt(route.params.vid.toString());
         const title = config.title;
         const part = ref(1);//当前分集
         const more = ref(false);//是否展开简介
@@ -87,7 +85,7 @@ export default defineComponent({
             collect: 0
         });//点赞收藏数据
         const loading = ref(true);
-        const resources = ref([]);
+        const resources = ref<Array<any>>([]);
         const videoInfo = ref<videoType | null>(null);
 
         //获取视频信息
@@ -100,7 +98,6 @@ export default defineComponent({
                     if (!resources.value[part.value - 1]) {
                         part.value = 1;
                     }
-                    options.data = resources.value[part.value - 1];
 
                     stat.value = res.data.data.stat;
                     //修改网站标题
@@ -139,7 +136,6 @@ export default defineComponent({
             if (resources.value[target - 1]) {
                 part.value = target;
             }
-            options.data = resources.value[part.value - 1];
             router.replace({ query: { p: part.value } });
         }
 
@@ -159,12 +155,12 @@ export default defineComponent({
 
 
         return {
+            vid,
             stat,
             more,
             part,
             title,
             number,
-            options,
             loading,
             resources,
             videoInfo,
@@ -172,7 +168,7 @@ export default defineComponent({
         }
     },
     components: {
-        WPlayer,
+        VideoPlayer,
         Comment,
         NTime,
         NIcon,

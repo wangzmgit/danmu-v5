@@ -13,9 +13,3 @@ export interface danmakuItemType {
     type: number,
     text: string,
 }
-
-export interface drawDanmakuType {
-    color: string,
-    type: number,
-    text: string,
-}

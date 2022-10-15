@@ -6,7 +6,7 @@ export default function useHls() {
 
     //加载hls
     const loadHls = (src: string, player: HTMLVideoElement) => {
-        hls.value = new Hls()
+        if (!hls.value) hls.value = new Hls();
         hls.value.loadSource(src);
         hls.value.attachMedia(player);
         hls.value.on(Hls.Events.ERROR, () => {
