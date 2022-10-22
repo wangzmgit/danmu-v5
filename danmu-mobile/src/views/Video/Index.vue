@@ -62,7 +62,6 @@ import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
 import { getVideoInfoAPI } from '@/api/video';
 import { BanSharp, CaretUp, CaretDown } from '@vicons/ionicons5';
 import Comment from './components/Comment.vue';
-// import WPlayer from '@/components/WPlayer/Index.vue';
 import VideoPlayer from './components/VideoPlayer.vue';
 import PartList from './components/PartList.vue';
 import HeaderBar from '@/components/HeaderBar.vue';
