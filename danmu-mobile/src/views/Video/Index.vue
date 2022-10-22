@@ -3,7 +3,8 @@
         <header-bar></header-bar>
         <div class="video-main">
             <div v-if="!loading" class="video-player">
-                <w-player :key="part" :vid="videoInfo!.vid" :part="part" :resource="options" />
+                <!-- <w-player :key="part" :vid="videoInfo!.vid" :part="part" :resource="options" /> -->
+                <video-player :vid="vid" :part="part" :resources="resources"></video-player>
                 <!-- 标题 -->
                 <div class="video-title">
                     <span :class="['title', fold ? 'title-fold' : '']">{{ videoInfo!.title }}</span>
@@ -61,7 +62,8 @@ import { defineComponent, onBeforeMount, reactive, ref } from 'vue';
 import { getVideoInfoAPI } from '@/api/video';
 import { BanSharp, CaretUp, CaretDown } from '@vicons/ionicons5';
 import Comment from './components/Comment.vue';
-import WPlayer from '@/components/WPlayer/Index.vue';
+// import WPlayer from '@/components/WPlayer/Index.vue';
+import VideoPlayer from './components/VideoPlayer.vue';
 import PartList from './components/PartList.vue';
 import HeaderBar from '@/components/HeaderBar.vue';
 import CommonAvatar from '@/components/CommonAvatar.vue';
@@ -71,6 +73,7 @@ export default defineComponent({
     setup() {
         const route = useRoute();
         const router = useRouter();
+        const vid = parseInt(route.params.vid.toString());
         const options = reactive({
             type: "hls",
             data: {}
@@ -118,6 +121,7 @@ export default defineComponent({
 
 
         return {
+            vid,
             fold,
             part,
             title,
@@ -129,7 +133,7 @@ export default defineComponent({
         }
     },
     components: {
-        WPlayer,
+        VideoPlayer,
         Comment,
         NTime,
         NIcon,

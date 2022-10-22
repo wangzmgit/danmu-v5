@@ -21,7 +21,7 @@ service.interceptors.request.use((config) => {
 
         //如果没有accessToken且有refreshTokenoken
         if (storage.get('refresh_token')) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 getAccessToken().then((res) => {
                     const token = res.data.data.token;
                     storage.set("access_token", token, 5);
