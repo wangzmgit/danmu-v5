@@ -1,5 +1,5 @@
 import request from '@/utils/request';
-import { danmakuType } from '@/components/WPlayer/types/danmaku';
+import { danmakuType } from '@/types/danmaku';
 
 //发送弹幕
 export const sendDanmakuAPI = (danmaku: danmakuType) => {
