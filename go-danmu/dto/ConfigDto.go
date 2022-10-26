@@ -22,7 +22,7 @@ type EmailConfigDto struct {
 
 type StorageConfigDto struct {
 	Https           bool
-	Storage         bool
+	Oss             bool
 	MaxImgSize      uint
 	MaxVideoSize    uint
 	Bucket          string

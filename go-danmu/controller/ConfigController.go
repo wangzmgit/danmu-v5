@@ -140,7 +140,7 @@ func SetStorageConfig(ctx *gin.Context) {
 	}
 
 	viper.Set("file.https", storage.Https)
-	viper.Set("file.oss", storage.Storage)
+	viper.Set("file.oss", storage.Oss)
 	viper.Set("file.domain", storage.Domain)
 	viper.Set("file.max_img_size", storage.MaxImgSize)
 	viper.Set("file.max_video_size", storage.MaxVideoSize)
