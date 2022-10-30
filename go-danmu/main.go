@@ -63,6 +63,16 @@ func initConfig() {
 	if err != nil {
 		panic(err)
 	}
+	if viper.GetString("server.access_jwt_secret") == "" {
+		viper.Set("server.access_jwt_secret", util.RandomCode(16))
+		time.Sleep(100)
+	}
+
+	if viper.GetString("server.refresh_jwt_secret") == "" {
+		viper.Set("server.refresh_jwt_secret", util.RandomCode(16))
+	}
+
+	viper.WriteConfig()
 }
 
 //初始化gin日志
